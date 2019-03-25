@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item
+        android:id="@+id/activity_main_drawer_map"
+        android:icon="@drawable/ic_map_black_24dp"
+        android:title="@string/drawer_item_map">
+    </item>
+
+    <item
+        android:id="@+id/activity_main_drawer_logout"
+        android:icon="@drawable/ic_logout_black_24dp"
+        android:title="@string/drawer_item_logout">
+    </item>
+
+</menu>

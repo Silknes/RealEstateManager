@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Real Estate Manager</string>
+
+    <string name="toolbar_item_add">Add Property</string>
+    <string name="toolbar_item_edit">Edit Property</string>
+    <string name="toolbar_item_search">Search Property</string>
+
+    <string name="drawer_item_map">Show in map</string>
+    <string name="drawer_item_logout">Logout</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

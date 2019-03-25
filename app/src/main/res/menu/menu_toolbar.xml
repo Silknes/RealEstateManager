@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_toolbar_item_add_property"
+        android:icon="@drawable/ic_add_white_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/toolbar_item_add">
+    </item>
+
+    <item
+        android:id="@+id/menu_toolbar_item_edit_property"
+        android:icon="@drawable/ic_mode_edit_white_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/toolbar_item_edit">
+    </item>
+
+    <item
+        android:id="@+id/menu_toolbar_item_search_property"
+        android:icon="@drawable/ic_search_white_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/toolbar_item_search">
+    </item>
+
+</menu>
