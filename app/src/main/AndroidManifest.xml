@@ -11,14 +11,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.openclassrooms.realestatemanager.MainActivity">
+        <activity android:name=".Controller.Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.openclassrooms.realestatemanager.SecondActivity"></activity>
+        <activity android:name=".SecondActivity" />
+        <activity
+            android:name=".Controller.Activities.DetailPropertyActivity"
+            android:label="Detail Property"
+            android:parentActivityName=".Controller.Activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Controller.Activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Controller.Activities.AddPropertyActivity"
+            android:label="Add Property"
+            android:parentActivityName=".Controller.Activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Controller.Activities.MainActivity"/>
+        </activity>
     </application>
 
 </manifest>

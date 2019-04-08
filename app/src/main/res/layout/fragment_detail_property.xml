@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Controller.Fragments.DetailPropertyFragment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Type"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="8dp"/>
+
+                <ViewSwitcher
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fragment_detail_property_view_switcher_type"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginStart="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingBottom="1dp"
+                        android:textSize="15sp"
+                        android:textColor="@color/lightBlack"
+                        android:id="@+id/fragment_detail_property_txt_type"/>
+
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="0dp"
+                        android:padding="0dp"
+                        android:id="@+id/fragment_detail_property_spinner_type"/>
+
+                </ViewSwitcher>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Price"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="20sp"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ViewSwitcher
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fragment_detail_property_view_switcher_price"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="2dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:paddingBottom="1dp"
+                            android:textSize="15sp"
+                            android:textColor="@color/lightBlack"
+                            android:id="@+id/fragment_detail_property_txt_price"
+                            android:gravity="center_vertical"/>
+
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:paddingStart="0dp"
+                            android:textSize="15sp"
+                            android:textColor="@color/lightBlack"
+                            android:id="@+id/fragment_detail_property_edit_price"
+                            android:inputType="numberDecimal"/>
+
+                    </ViewSwitcher>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="1dp"
+                        android:text="$"
+                        android:textSize="15sp"
+                        android:textColor="@color/lightBlack"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="8dp"/>
+
+                <ViewSwitcher
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fragment_detail_property_view_switcher_status"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginStart="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingBottom="1dp"
+                        android:textSize="15sp"
+                        android:textColor="@color/lightBlack"
+                        android:id="@+id/fragment_detail_property_txt_status"/>
+
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="0dp"
+                        android:padding="0dp"
+                        android:id="@+id/fragment_detail_property_spinner_status"/>
+
+                </ViewSwitcher>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Media"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp"
+                android:paddingStart="16dp">
+
+                <LinearLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@color/lightBlack"
+                    android:layout_marginEnd="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@color/lightBlack"
+                    android:layout_marginEnd="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@color/lightBlack"
+                    android:layout_marginEnd="8dp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"/>
+
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:id="@+id/fragment_detail_property_view_switcher_description">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="1dp"
+                    android:textColor="@color/lightBlack"
+                    android:textSize="15sp"
+                    android:gravity="center_vertical"
+                    android:id="@+id/fragment_detail_property_txt_description"/>
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingStart="0dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/lightBlack"
+                    android:id="@+id/fragment_detail_property_edit_description"/>
+
+            </ViewSwitcher>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Address"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"/>
+
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:id="@+id/fragment_detail_property_view_switcher_address">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="1dp"
+                    android:textColor="@color/lightBlack"
+                    android:textSize="15sp"
+                    android:gravity="center_vertical"
+                    android:id="@+id/fragment_detail_property_txt_address"/>
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingStart="0dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/lightBlack"
+                    android:id="@+id/fragment_detail_property_edit_address"/>
+
+            </ViewSwitcher>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Area"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <ViewSwitcher
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fragment_detail_property_view_switcher_area"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="2dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingBottom="1dp"
+                        android:textSize="15sp"
+                        android:textColor="@color/lightBlack"
+                        android:id="@+id/fragment_detail_property_txt_area"
+                        android:gravity="center_vertical"/>
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="0dp"
+                        android:textSize="15sp"
+                        android:textColor="@color/lightBlack"
+                        android:id="@+id/fragment_detail_property_edit_area"
+                        android:inputType="number"/>
+
+                </ViewSwitcher>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="3dp"
+                    android:text="m²"
+                    android:textSize="15sp"
+                    android:textColor="@color/lightBlack"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Number of room"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"/>
+
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_detail_property_view_switcher_nb_room"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="1dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/lightBlack"
+                    android:id="@+id/fragment_detail_property_txt_nb_room"
+                    android:gravity="center_vertical"/>
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingStart="0dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/lightBlack"
+                    android:id="@+id/fragment_detail_property_edit_nb_room"
+                    android:inputType="number"/>
+
+            </ViewSwitcher>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Real Estate Agent"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/lightBlack"
+                android:text="John McClane"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date of entry"
+                android:textColor="@color/colorAccent"
+                android:paddingBottom="8dp"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:paddingBottom="1dp"
+                android:textSize="15sp"
+                android:textColor="@color/lightBlack"
+                android:id="@+id/fragment_detail_property_txt_date_entry"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date of sale"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"
+                android:layout_marginBottom="4dp"
+                android:id="@+id/fragment_detail_property_txt_date_sale_title"/>
+
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_detail_property_view_switcher_date_sale"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="1dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/lightBlack"
+                    android:id="@+id/fragment_detail_property_txt_date_sale"
+                    android:gravity="center_vertical"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/fragment_detail_property_container_date_sale">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/lightBlack"
+                        android:textSize="15sp"
+                        android:id="@+id/fragment_detail_property_txt_date_sale_edit_mode"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_arrow_drop_down_dark_grey_24dp"/>
+
+                </LinearLayout>
+
+            </ViewSwitcher>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Point of interest"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"
+                android:layout_marginBottom="4dp"/>
+
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_detail_property_view_switcher_point_interest"
+                android:layout_marginStart="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/lightBlack"
+                    android:id="@+id/fragment_detail_property_txt_point_interest"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/fragment_detail_property_container_checkbox_point_interest">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="School"
+                        android:textColor="@color/lightBlack"
+                        android:textSize="15sp"
+                        android:id="@+id/fragment_detail_property_checkbox_school"/>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shop"
+                        android:textSize="15sp"
+                        android:textColor="@color/lightBlack"
+                        android:id="@+id/fragment_detail_property_checkbox_shop"/>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Parc"
+                        android:textSize="15sp"
+                        android:textColor="@color/lightBlack"
+                        android:id="@+id/fragment_detail_property_checkbox_parc"/>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Public Transport"
+                        android:textColor="@color/lightBlack"
+                        android:textSize="15sp"
+                        android:id="@+id/fragment_detail_property_checkbox_public_transport"/>
+
+                </LinearLayout>
+
+            </ViewSwitcher>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

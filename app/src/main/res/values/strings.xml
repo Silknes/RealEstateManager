@@ -9,4 +9,23 @@
     <string name="drawer_item_logout">Logout</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="property_type">Type</string>
+    <string name="property_price">Price</string>
+    <string name="property_area">Area</string>
+    
+    <string-array name="spinner_type">
+        <item>Select type</item>
+        <item>House</item>
+        <item>Apartment</item>
+        <item>Loft</item>
+        <item>Duplex</item>
+    </string-array>
+
+    <string-array name="spinner_status">
+        <item>Set the status</item>
+        <item>Sold</item>
+        <item>Available</item>
+    </string-array>
+
 </resources>

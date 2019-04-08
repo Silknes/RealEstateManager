@@ -1,9 +1,10 @@
-package com.openclassrooms.realestatemanager;
+package com.openclassrooms.realestatemanager.Util;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -35,6 +36,30 @@ public class Utils {
     public static String getTodayDate(){
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(new Date());
+    }
+
+    public static Date convertStringToDate(String stringToConvert){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date convertedDate = new Date();
+        try {
+            convertedDate = dateFormat.parse(stringToConvert);
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+        return convertedDate;
+    }
+
+    public static String formatStringDate(int year, int month, int day){
+        month = month + 1;
+        String strMonth = "" + month;
+        String strDay = "" + day;
+        if(month < 10) {
+            strMonth = "0" + strMonth;
+            if(day < 10) {
+                strDay = "0" + strDay;
+            }
+        }
+        return strDay + "/" + strMonth + "/" + year;
     }
 
     /**
