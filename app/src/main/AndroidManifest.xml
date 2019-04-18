@@ -3,6 +3,11 @@
     package="com.openclassrooms.realestatemanager">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -33,8 +38,9 @@
             android:parentActivityName=".Controller.Activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Controller.Activities.MainActivity"/>
+                android:value=".Controller.Activities.MainActivity" />
         </activity>
+        <activity android:name=".Controller.Activities.AuthenticationActivity"></activity>
     </application>
 
 </manifest>

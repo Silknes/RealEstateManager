@@ -361,6 +361,7 @@
                 android:layout_marginBottom="16dp"
                 android:textColor="@color/lightBlack"
                 android:text="John McClane"
+                android:id="@+id/fragment_detail_property_txt_agent"
                 android:textSize="15sp"/>
 
             <TextView

@@ -6,12 +6,13 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.Controller.Fragments.AddPropertyFragment;
 import com.openclassrooms.realestatemanager.R;
 
 public class AddPropertyActivity extends AppCompatActivity {
+    private AddPropertyFragment addPropertyFragment;
+    private boolean[] pois = new boolean[]{false, false, false, false};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,7 @@ public class AddPropertyActivity extends AppCompatActivity {
 
     // Method that configure the fragment for this activity
     private void configureAndShowAddPropertyFragment(){
-        AddPropertyFragment addPropertyFragment = (AddPropertyFragment) getSupportFragmentManager()
+        addPropertyFragment = (AddPropertyFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.activity_add_property_fragment_container);
         if(addPropertyFragment == null){
             addPropertyFragment = new AddPropertyFragment();
@@ -39,7 +40,7 @@ public class AddPropertyActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if(ab != null) ab.setDisplayHomeAsUpEnabled(true);
     }
 
     // Method that manage the click on each Checkbox of the fragment
@@ -47,21 +48,18 @@ public class AddPropertyActivity extends AppCompatActivity {
         boolean isChecked = ((CheckBox) view).isChecked();
         switch(view.getId()){
             case R.id.fragment_add_property_checkbox_school:
-                if(isChecked) Toast.makeText(this, "School Checked", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(this, "School Unchecked", Toast.LENGTH_SHORT).show();
+                pois[0] = isChecked;
                 break;
             case R.id.fragment_add_property_checkbox_shop:
-                if(isChecked) Toast.makeText(this, "Shop Checked", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(this, "Shop Unchecked", Toast.LENGTH_SHORT).show();
+                pois[1] = isChecked;
                 break;
             case R.id.fragment_add_property_checkbox_parc:
-                if(isChecked) Toast.makeText(this, "Parc Checked", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(this, "Parc Unchecked", Toast.LENGTH_SHORT).show();
+                pois[2] = isChecked;
                 break;
             case R.id.fragment_add_property_checkbox_public_transport:
-                if(isChecked) Toast.makeText(this, "Public Transport Checked", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(this, "Public Transport Unchecked", Toast.LENGTH_SHORT).show();
+                pois[3] = isChecked;
                 break;
         }
+        addPropertyFragment.updatePoi(pois);
     }
 }

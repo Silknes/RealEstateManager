@@ -1,8 +1,10 @@
 package com.openclassrooms.realestatemanager.Controller.Activities;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -19,11 +21,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.Controller.Fragments.AddPropertyFragment;
 import com.openclassrooms.realestatemanager.Controller.Fragments.DetailPropertyFragment;
 import com.openclassrooms.realestatemanager.Controller.Fragments.PropertyFragment;
+import com.openclassrooms.realestatemanager.Injections.Injection;
+import com.openclassrooms.realestatemanager.Injections.ViewModelFactory;
+import com.openclassrooms.realestatemanager.Model.User;
+import com.openclassrooms.realestatemanager.PropertyViewModel;
 import com.openclassrooms.realestatemanager.R;
 
 /*
@@ -45,21 +52,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean isEditMode;
     private LinearLayout snackbarLayout;
 
+    private long userId;
+
+    private SharedPreferences.Editor editor;
+
+    private NavigationView navigationView;
+    private TextView txtUserMail, txtUsername;
+
     //private TextView textViewMain;
     //private TextView textViewQuantity;
+
+    private PropertyViewModel propertyViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences sharedPreferences = this.getSharedPreferences("MY_SHARED_PREFERENCES", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        fragmentManager = getSupportFragmentManager();
+
+        userId = getSharedPreferences("MY_SHARED_PREFERENCES", Context.MODE_PRIVATE).getLong("userId", -1);
+        this.configureViewModel();
+        this.getCurrentUser(userId);
+
         this.configureToolbar();
         this.configureDrawerLayout();
         this.configureNavigationView();
 
-        fragmentManager = getSupportFragmentManager();
-
-        this.configureAndShowPropertyFragment();
+        txtUserMail = navigationView.getHeaderView(0).findViewById(R.id.navigation_header_txt_user_mail);
+        txtUsername = navigationView.getHeaderView(0).findViewById(R.id.navigation_header_txt_username);
+        this.propertyViewModel.getCurrentUser().observe(this, this::updateNavHeaderTxt);
 
         snackbarLayout = findViewById(R.id.activity_main_container_snackbar);
         isEditMode = false;
@@ -69,6 +94,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         this.configureTextViewMain();
         this.configureTextViewQuantity();*/
+    }
+
+    private void configureViewModel(){
+        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory(this);
+        this.propertyViewModel = ViewModelProviders.of(this, viewModelFactory).get(PropertyViewModel.class);
     }
 
     private void configureToolbar(){
@@ -85,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void configureNavigationView(){
-        NavigationView navigationView = findViewById(R.id.activity_main_nav_view);
+        navigationView = findViewById(R.id.activity_main_nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -103,26 +133,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     addPropertyFragment = new AddPropertyFragment();
                     removeAndReplaceFragment(detailPropertyFragment, addPropertyFragment);
                 }
-                else startAddPropertyActivity();
+                else {
+                    Intent intent = new Intent(this, AddPropertyActivity.class);
+                    startActivity(intent);
+                }
                 return true;
             case R.id.menu_toolbar_item_edit_property :
                 if(fragmentManager.getFragments().contains(detailPropertyFragment)){
                     if(isEditMode){
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
                         builder.setMessage("Save changes ?")
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        detailPropertyFragment.updateDetailProperty(true);
-                                        isEditMode = false;
-                                    }
+                                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                                    detailPropertyFragment.updateDetailProperty(true);
+                                    isEditMode = false;
                                 })
-                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        detailPropertyFragment.updateDetailProperty(false);
-                                        isEditMode = false;
-                                    }
+                                .setNegativeButton("No", (dialogInterface, i) -> {
+                                    detailPropertyFragment.updateDetailProperty(false);
+                                    isEditMode = false;
                                 })
                                 .show();
                     }else{
@@ -149,7 +176,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(this, R.string.drawer_item_map, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.activity_main_drawer_logout :
-                Toast.makeText(this, R.string.drawer_item_logout, Toast.LENGTH_SHORT).show();
+                editor.putLong("userId", -1).apply();
+                getCurrentUser(-1);
                 break;
             default :
                 break;
@@ -177,9 +205,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(propertyFragment == null && detailPropertyFragment == null){
                 propertyFragment = new PropertyFragment();
                 detailPropertyFragment = new DetailPropertyFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("position", 0);
-                detailPropertyFragment.setArguments(bundle);
                 fragmentManager.beginTransaction()
                         .add(R.id.activity_main_fragment_container, propertyFragment)
                         .add(R.id.activity_main_fragment_container, detailPropertyFragment)
@@ -191,11 +216,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void removeAndReplaceFragment(Fragment fragmentToRemove, Fragment fragmentToAdd){
         fragmentManager.beginTransaction().remove(fragmentToRemove).commit();
         fragmentManager.beginTransaction().add(R.id.activity_main_fragment_container, fragmentToAdd).commit();
-    }
-
-    private void startAddPropertyActivity(){
-        Intent intent = new Intent(this, AddPropertyActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -213,9 +233,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onItemClicked(int position) {
         if(!fragmentManager.getFragments().contains(detailPropertyFragment)){
             detailPropertyFragment = new DetailPropertyFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt("position", position);
-            detailPropertyFragment.setArguments(bundle);
             removeAndReplaceFragment(addPropertyFragment, detailPropertyFragment);
         }
     }
@@ -241,6 +258,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 else Toast.makeText(this, "Public Transport Unchecked", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    private void getCurrentUser(long userId){
+        this.propertyViewModel.updateCurrentUser(userId);
+        this.propertyViewModel.getCurrentUser().observe(this, this::startAuthenticationActivity);
+    }
+
+    private void startAuthenticationActivity(User user){
+        if(user == null){
+            Intent intent = new Intent(this, AuthenticationActivity.class);
+            startActivity(intent);
+        } else this.configureAndShowPropertyFragment();
+    }
+
+    private void updateNavHeaderTxt(User user){
+        txtUserMail.setText(user.getEmail());
+        txtUsername.setText(user.getUsername());
     }
 
     /***************************/

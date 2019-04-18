@@ -13,7 +13,7 @@
     <string name="property_type">Type</string>
     <string name="property_price">Price</string>
     <string name="property_area">Area</string>
-    
+
     <string-array name="spinner_type">
         <item>Select type</item>
         <item>House</item>
@@ -27,5 +27,15 @@
         <item>Sold</item>
         <item>Available</item>
     </string-array>
+
+    <string name="available">Available</string>
+    <string name="sold">Sold</string>
+    <string name="house">House</string>
+    <string name="apartment">Apartment</string>
+    <string name="loft">Loft</string>
+    <string name="duplex">Duplex</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

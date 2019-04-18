@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.openclassrooms.realestatemanager.Model.Property;
 import com.openclassrooms.realestatemanager.R;
 
 public class HouseViewHolder extends RecyclerView.ViewHolder {
@@ -18,5 +19,18 @@ public class HouseViewHolder extends RecyclerView.ViewHolder {
         typeProperty = itemView.findViewById(R.id.fragment_property_item_type_property);
         cityProperty = itemView.findViewById(R.id.fragment_property_item_city_property);
         photoProperty = itemView.findViewById(R.id.fragment_property_item_photo_property);
+    }
+
+    public void updateWithPropertiesData(Property property){
+        priceProperty.setText(property.getPrice() + " $");
+        switch(property.getStatus()){
+            case 1:
+                typeProperty.setText("Sold");
+                break;
+            case 2:
+                typeProperty.setText("Available");
+                break;
+        }
+        cityProperty.setText(property.getArea() + " m²");
     }
 }

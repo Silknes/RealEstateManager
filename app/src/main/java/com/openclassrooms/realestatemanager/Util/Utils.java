@@ -1,7 +1,9 @@
 package com.openclassrooms.realestatemanager.Util;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.wifi.WifiManager;
+import android.util.DisplayMetrics;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -62,6 +64,10 @@ public class Utils {
         return strDay + "/" + strMonth + "/" + year;
     }
 
+    public static boolean compareDate(Date dateSelected, Date todayDate){
+        return dateSelected.before(todayDate);
+    }
+
     /**
      * Vérification de la connexion réseau
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
@@ -71,5 +77,27 @@ public class Utils {
     public static Boolean isInternetAvailable(Context context){
         WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
         return wifi.isWifiEnabled();
+    }
+
+    public static int convertDpToPx(int pxValue){
+        return pxValue*(Resources.getSystem().getDisplayMetrics().densityDpi/160);
+    }
+
+    public static boolean isEmailCorrect(String mail){
+        return mail.contains("@")
+                && mail.contains(".")
+                && mail.lastIndexOf("@") < mail.lastIndexOf(".")
+                && mail.lastIndexOf("@") + 1 != mail.lastIndexOf(".")
+                && mail.lastIndexOf(".") + 1 < mail.length();
+    }
+
+    public static boolean isPasswordCorrect(String password){
+        return password.length() > 7
+                && password.matches(".*\\d.*")
+                && password.matches(".*[a-z].*");
+    }
+
+    public static boolean isUsernameCorrect(String username){
+        return username.length() > 3;
     }
 }

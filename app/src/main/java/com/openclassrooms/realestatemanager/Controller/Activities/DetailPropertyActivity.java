@@ -39,7 +39,7 @@ public class DetailPropertyActivity extends AppCompatActivity {
         if(detailPropertyFragment == null){
             detailPropertyFragment = new DetailPropertyFragment();
             Bundle bundle = new Bundle();
-            bundle.putInt("position", getIntent().getExtras().getInt("position"));
+            bundle.putSerializable("property", getIntent().getSerializableExtra("property"));
             detailPropertyFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.activity_detail_property_fragment_container, detailPropertyFragment)
