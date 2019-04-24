@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.RequestManager;
+import com.openclassrooms.realestatemanager.Model.Photo;
 import com.openclassrooms.realestatemanager.Model.Property;
 import com.openclassrooms.realestatemanager.R;
 
@@ -14,9 +16,13 @@ import java.util.List;
 
 public class HouseAdapter extends RecyclerView.Adapter<HouseViewHolder> {
     private List<Property> propertyList;
+    private List<Photo> photoList;
+    private RequestManager glide;
 
-    public HouseAdapter() {
-        this.propertyList = new ArrayList<>();
+    public HouseAdapter(List<Property> propertyList, List<Photo> photoList, RequestManager glide) {
+        this.propertyList = propertyList;
+        this.photoList = photoList;
+        this.glide = glide;
     }
 
     @Override
@@ -30,7 +36,7 @@ public class HouseAdapter extends RecyclerView.Adapter<HouseViewHolder> {
 
     @Override
     public void onBindViewHolder(HouseViewHolder holder, int position) {
-        holder.updateWithPropertiesData(propertyList.get(position));
+        holder.updateWithPropertiesData(this.propertyList.get(position), this.photoList.get(position), this.glide);
     }
 
     @Override
@@ -38,8 +44,9 @@ public class HouseAdapter extends RecyclerView.Adapter<HouseViewHolder> {
         return propertyList.size();
     }
 
-    public void updateData(List<Property> propertyList){
+    public void updateData(List<Property> propertyList, List<Photo> photoList){
         this.propertyList = propertyList;
+        this.photoList = photoList;
         this.notifyDataSetChanged();
     }
 

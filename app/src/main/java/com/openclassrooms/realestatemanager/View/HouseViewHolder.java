@@ -1,10 +1,14 @@
 package com.openclassrooms.realestatemanager.View;
 
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.RequestManager;
+import com.openclassrooms.realestatemanager.Model.Photo;
 import com.openclassrooms.realestatemanager.Model.Property;
 import com.openclassrooms.realestatemanager.R;
 
@@ -21,7 +25,7 @@ public class HouseViewHolder extends RecyclerView.ViewHolder {
         photoProperty = itemView.findViewById(R.id.fragment_property_item_photo_property);
     }
 
-    public void updateWithPropertiesData(Property property){
+    public void updateWithPropertiesData(Property property, Photo photo, RequestManager glide){
         priceProperty.setText(property.getPrice() + " $");
         switch(property.getStatus()){
             case 1:
@@ -32,5 +36,6 @@ public class HouseViewHolder extends RecyclerView.ViewHolder {
                 break;
         }
         cityProperty.setText(property.getArea() + " m²");
+        glide.load(Uri.parse(photo.getUriPhoto())).into(photoProperty);
     }
 }

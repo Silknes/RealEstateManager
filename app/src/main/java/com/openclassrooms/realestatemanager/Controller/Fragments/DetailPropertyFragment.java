@@ -1,12 +1,22 @@
 package com.openclassrooms.realestatemanager.Controller.Fragments;
 
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,27 +24,49 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.openclassrooms.realestatemanager.Controller.Activities.DetailPropertyActivity;
+import com.openclassrooms.realestatemanager.Controller.Activities.FullScreenActivity;
 import com.openclassrooms.realestatemanager.Injections.Injection;
 import com.openclassrooms.realestatemanager.Injections.ViewModelFactory;
+import com.openclassrooms.realestatemanager.Model.Photo;
 import com.openclassrooms.realestatemanager.Model.Property;
 import com.openclassrooms.realestatemanager.Model.User;
 import com.openclassrooms.realestatemanager.PropertyViewModel;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.Util.ItemClickSupport;
 import com.openclassrooms.realestatemanager.Util.Utils;
+import com.openclassrooms.realestatemanager.View.PhotoAdapter;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+
+import static android.app.Activity.RESULT_OK;
 
 public class DetailPropertyFragment extends Fragment{
     private TextView txtDescription, txtPrice, txtArea, txtNbRoom, txtAddress, txtType, txtStatus, txtPointInterest, txtEntryDate, txtSaleDateTitle, txtSaleDate, txtSaleDateEditMode, txtAgent;
     private EditText editDescription, editPrice, editArea, editNbRoom, editAddress;
     private ViewSwitcher viewSwitcherDescription, viewSwitcherPrice, viewSwitcherArea, viewSwitcherNbRoom, viewSwitcherAddress , viewSwitcherType, viewSwitcherStatus, viewSwitcherPointInterest, viewSwitcherSaleDate;
     private Spinner spinnerType, spinnerStatus;
-    private LinearLayout linearPointInterest, linearSaleDate;
+    private LinearLayout linearPointInterest, linearSaleDate, linearAddPhoto;
     private CheckBox checkBoxSchool, checkBoxShop, checkBoxParc, checkBoxPublicTransport;
     private boolean valueSchool, valueShop, valueParc, valuePublicTransport;
 
@@ -45,6 +77,22 @@ public class DetailPropertyFragment extends Fragment{
 
     private long userId;
     private SharedPreferences.Editor editor;
+
+    private RecyclerView recyclerView;
+    private PhotoAdapter adapter;
+    private List<Photo> photoList;
+
+    // Variables used to add new photo
+    private static final int RC_IMAGE_PERMS = 100;
+    private static final int RC_CHOOSE_PHOTO = 200;
+    private static final int RC_IMAGE_CAPTURE = 300;
+    private static final String PERMS = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    private String photoPath, photoDescriptionStr;
+    private View dialogView;
+    private EditText photoDescriptionEdit;
+    private List<Photo> photoListToAddInDb = new ArrayList<>();
+    private Photo photo;
+    private List<Photo> photoListToRemoveInDb = new ArrayList<>();
 
     public DetailPropertyFragment() {}
 
@@ -88,11 +136,14 @@ public class DetailPropertyFragment extends Fragment{
 
         linearPointInterest = view.findViewById(R.id.fragment_detail_property_container_checkbox_point_interest);
         linearSaleDate = view.findViewById(R.id.fragment_detail_property_container_date_sale);
+        linearAddPhoto = view.findViewById(R.id.fragment_detail_property_linear_add_photo);
 
         checkBoxSchool = view.findViewById(R.id.fragment_detail_property_checkbox_school);
         checkBoxShop = view.findViewById(R.id.fragment_detail_property_checkbox_shop);
         checkBoxParc = view.findViewById(R.id.fragment_detail_property_checkbox_parc);
         checkBoxPublicTransport = view.findViewById(R.id.fragment_detail_property_checkbox_public_transport);
+
+        recyclerView = view.findViewById(R.id.fragment_detail_property_recycler_view);
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MY_SHARED_PREFERENCES", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -102,6 +153,12 @@ public class DetailPropertyFragment extends Fragment{
 
         this.configureViewModel();
         this.setViewWithPropertyData(property);
+
+        this.configureRecyclerView();
+        this.configureOnClickRecyclerView();
+        this.removePhotoOnLongClick();
+        this.getPhotos();
+        this.setOnClickListenerToPhotoLayout();
 
         this.setSpinner(R.array.spinner_type, spinnerType);
         this.setSpinner(R.array.spinner_status, spinnerStatus);
@@ -124,6 +181,35 @@ public class DetailPropertyFragment extends Fragment{
         this.propertyViewModel.init(userId);
     }
 
+    private void configureRecyclerView(){
+        this.photoList = new ArrayList<>();
+        this.adapter = new PhotoAdapter(photoList, Glide.with(this));
+        this.recyclerView.setAdapter(this.adapter);
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+    }
+
+    private void getPhotos(){
+        this.propertyViewModel.getPhotosProperty(property.getId()).observe(this, this::updateData);
+    }
+
+    private void updateData(List<Photo> photoList){
+        this.photoList = photoList;
+        adapter.updateData(photoList);
+    }
+
+    private void configureOnClickRecyclerView(){
+        ItemClickSupport.addTo(recyclerView, R.layout.fragment_property_item)
+                .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                        Intent intent = new Intent(getContext(), FullScreenActivity.class);
+                        intent.putExtra("uri", adapter.getPhoto(position).getUriPhoto());
+                        intent.putExtra("description", adapter.getPhoto(position).getDescription());
+                        startActivity(intent);
+                    }
+                });
+    }
+
     // Public method call in parent activity to switch between our different according to if we are in edit mode or not
     public void updateDetailProperty(boolean saveChanges){
         updateViewSwitcherForEditTxt(viewSwitcherDescription, txtDescription, editDescription, saveChanges);
@@ -136,7 +222,14 @@ public class DetailPropertyFragment extends Fragment{
         updateViewSwitcherForCheckbox(viewSwitcherPointInterest, txtPointInterest, linearPointInterest, saveChanges);
         updateViewSwitcherForDate(viewSwitcherSaleDate, txtSaleDate, txtSaleDateEditMode, linearSaleDate, saveChanges);
 
-        if(saveChanges) updateProperty(property);
+        if(linearAddPhoto.getVisibility() == View.VISIBLE)linearAddPhoto.setVisibility(View.GONE);
+        else linearAddPhoto.setVisibility(View.VISIBLE);
+
+        if(saveChanges) {
+            updateProperty(property);
+            this.deletePhotoInDb(photoListToRemoveInDb);
+            this.updatePhotoProperty();
+        } else adapter.updateData(photoList);
         this.setSaleDateVisibility();
 
     }
@@ -379,6 +472,165 @@ public class DetailPropertyFragment extends Fragment{
     }
 
     private void setTxtAgent(User user){
-        txtAgent.setText(user.getUsername());
+        txtAgent.setText(Utils.uppercaseFirstLetter(user.getUsername()));
     }
+
+    /******************************
+    **** ADD PHOTO TO PROPERTY ****
+    ******************************/
+
+    private void setOnClickListenerToPhotoLayout(){
+        this.linearAddPhoto.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage("Do you want to take a picture or pick a picture from gallery ?")
+                    .setPositiveButton("Take picture", (dialog, which) -> this.afterPermissionGranted(1))
+                    .setNegativeButton("From gallery", (dialog, which) -> this.afterPermissionGranted(2))
+                    .show();
+        });
+    }
+
+    @AfterPermissionGranted(RC_IMAGE_PERMS)
+    private void afterPermissionGranted(int id){
+        if(!EasyPermissions.hasPermissions(getContext(), PERMS)){
+            EasyPermissions.requestPermissions(this, "Test", RC_IMAGE_PERMS, PERMS);
+            return;
+        }
+        switch(id){
+            case 1:
+                this.takePictureWithCamera();
+                break;
+            case 2:
+                this.chooseImageInGallery();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void takePictureWithCamera(){
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(intent.resolveActivity(getActivity().getPackageManager()) != null){
+            File photoFile = null;
+            try{
+                photoFile = createImageFile();
+            } catch (IOException e){
+                Toast.makeText(getContext(), "error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            if(photoFile != null){
+                Uri photoUri = FileProvider.getUriForFile(
+                        getContext(),
+                        "com.openclassrooms.realestatemanager.fileprovider",
+                        photoFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(intent, RC_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException{
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        photoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void chooseImageInGallery(){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, RC_CHOOSE_PHOTO);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        this.handleResponse(requestCode, resultCode, data);
+    }
+
+    private void handleResponse(int requestCode, int resultCode, Intent data){
+        dialogView = getLayoutInflater().inflate(R.layout.custom_alert_builder, null);
+        photoDescriptionEdit = dialogView.findViewById(R.id.alert_dialog_builder_edit_text);
+        AlertDialog.Builder builderDescription = new AlertDialog.Builder(getContext());
+        builderDescription.setMessage("Enter a description to the photo")
+                .setView(dialogView)
+                .setPositiveButton("Validate", (dialog, which) -> {
+                    if(resultCode == RESULT_OK){
+                        photoDescriptionStr = photoDescriptionEdit.getText().toString();
+                        if(requestCode == RC_CHOOSE_PHOTO) this.createNewPhoto(data, 1);
+                        else if(requestCode == RC_IMAGE_CAPTURE) this.createNewPhoto(data, 2);
+                    } else  Toast.makeText(getContext(), "No image selected", Toast.LENGTH_SHORT).show();
+                })
+                .show();
+    }
+
+    private void createNewPhoto(Intent data, int id){
+        switch(id){
+            case 1:
+                photo = new Photo(property.getId(), photoDescriptionStr, data.getData().toString(), this.getPhotoPosition());
+                break;
+            case 2:
+                File f = new File(photoPath);
+                Uri uri = Uri.fromFile(f);
+                photo = new Photo(property.getId(), photoDescriptionStr, uri.toString(), this.getPhotoPosition());
+                break;
+        }
+        photoListToAddInDb.add(photo);
+        photoList.add(photo);
+    }
+
+    private int getPhotoPosition(){
+        return photoList.get(photoList.size() - 1).getPosition() + 1;
+    }
+
+     /*******************************
+     ***** SAVE PHOTO IN DATABASE ***
+     *******************************/
+
+    private void updatePhotoProperty(){
+        if(photoListToAddInDb.size() != 0) {
+            for (int i = 0; i < photoListToAddInDb.size(); i++) {
+                this.propertyViewModel.createPhoto(photoListToAddInDb.get(i));
+            }
+            this.getPhotos();
+            photoListToAddInDb = new ArrayList<>();
+        }
+    }
+
+     /***********************************
+     ***** REMOVE PHOTO ON LONG CLICK ***
+     ***********************************/
+
+     private void removePhotoOnLongClick(){
+         ItemClickSupport.addTo(recyclerView, R.layout.fragment_property_item)
+                 .setOnItemLongClickListener((recyclerView, position, v) -> {
+                     if(linearAddPhoto.getVisibility() == View.VISIBLE) this.removePhotoInRecyclerView(adapter.getPhoto(position));
+                     return true;
+                 });
+     }
+
+     private void deletePhotoInDb(List<Photo> photoList){
+         if(photoList.size() != 0) {
+             for (int i = 0; i < photoList.size(); i++) {
+                 this.propertyViewModel.deletePhoto(photoList.get(i).getId());
+                 this.propertyViewModel.updatePhoto(this.photoList.get(i));
+             }
+         }
+     }
+
+     private void removePhotoInRecyclerView(Photo photo){
+         photoListToRemoveInDb.add(photo);
+         photoList.remove(photo.getPosition() - 1);
+         for(int i = 0; i < photoList.size(); i++) {
+             photoList.get(i).setPosition(i + 1);
+         }
+         adapter.updateData(photoList);
+     }
 }

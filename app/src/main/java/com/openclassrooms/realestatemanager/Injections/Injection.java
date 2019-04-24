@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.Injections;
 import android.content.Context;
 
 import com.openclassrooms.realestatemanager.Database.RealEstateManagerDatabase;
+import com.openclassrooms.realestatemanager.Repositories.PhotoDataRepository;
 import com.openclassrooms.realestatemanager.Repositories.PropertyDataRepository;
 import com.openclassrooms.realestatemanager.Repositories.UserDataRepository;
 
@@ -20,6 +21,11 @@ public class Injection {
         return new UserDataRepository(database.userDao());
     }
 
+    public static PhotoDataRepository providePhotoDataSource(Context context){
+        RealEstateManagerDatabase database = RealEstateManagerDatabase.getInstance(context);
+        return new PhotoDataRepository(database.photoDao());
+    }
+
     public static Executor provideExecutor(){
         return Executors.newSingleThreadExecutor();
     }
@@ -27,7 +33,8 @@ public class Injection {
     public static ViewModelFactory provideViewModelFactory(Context context){
         PropertyDataRepository dataSourceProperty = providePropertyDataSource(context);
         UserDataRepository dataSourceUser = provideUserDataSource(context);
+        PhotoDataRepository dataSourcePhoto = providePhotoDataSource(context);
         Executor executor = provideExecutor();
-        return new ViewModelFactory(dataSourceProperty, dataSourceUser, executor);
+        return new ViewModelFactory(dataSourceProperty, dataSourceUser, dataSourcePhoto, executor);
     }
 }

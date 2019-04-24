@@ -15,16 +15,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.Controller.Activities.AuthenticationActivity;
 import com.openclassrooms.realestatemanager.Controller.Activities.DetailPropertyActivity;
 import com.openclassrooms.realestatemanager.Injections.Injection;
 import com.openclassrooms.realestatemanager.Injections.ViewModelFactory;
+import com.openclassrooms.realestatemanager.Model.Photo;
 import com.openclassrooms.realestatemanager.Model.Property;
 import com.openclassrooms.realestatemanager.PropertyViewModel;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.Util.ItemClickSupport;
 import com.openclassrooms.realestatemanager.View.HouseAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PropertyFragment extends Fragment{
@@ -34,6 +37,9 @@ public class PropertyFragment extends Fragment{
     private PropertyViewModel propertyViewModel;
     private long userId;
     private SharedPreferences.Editor editor;
+
+    private List<Property> propertyList;
+    private List<Photo> photoList;
 
     private onItemClickedListener mCallback;
 
@@ -64,7 +70,9 @@ public class PropertyFragment extends Fragment{
     }
 
     private void configureRecyclerView(){
-        this.adapter = new HouseAdapter();
+        this.propertyList = new ArrayList<>();
+        this.photoList = new ArrayList<>();
+        this.adapter = new HouseAdapter(this.propertyList, this.photoList, Glide.with(this));
         this.recyclerView.setAdapter(this.adapter);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -106,7 +114,21 @@ public class PropertyFragment extends Fragment{
     }
 
     private void updatePropertiesList(List<Property> propertyList){
-        this.adapter.updateData(propertyList);
+        this.propertyList = propertyList;
+        this.getAllPhotos();
+    }
+
+    private void getAllPhotos(){
+        this.propertyViewModel.getMainPhotos().observe(this, this::updatePhotosList);
+    }
+
+    private void updatePhotosList(List<Photo> photoList){
+        this.photoList = photoList;
+        getDataFromDb();
+    }
+
+    private void getDataFromDb(){
+        adapter.updateData(propertyList, photoList);
     }
 
     private boolean isLandscape(){

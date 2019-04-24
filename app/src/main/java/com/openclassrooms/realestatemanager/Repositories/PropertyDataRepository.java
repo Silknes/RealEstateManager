@@ -22,6 +22,10 @@ public class PropertyDataRepository {
         return this.propertyDao.getAllProperties();
     }
 
+    public LiveData<Property> getProperty(long propertyId){
+        return this.propertyDao.getProperty(propertyId);
+    }
+
     public void createProperty(Property property){
         propertyDao.insertProperty(property);
     }

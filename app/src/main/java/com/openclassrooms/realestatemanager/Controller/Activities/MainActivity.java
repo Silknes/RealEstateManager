@@ -32,6 +32,7 @@ import com.openclassrooms.realestatemanager.Injections.ViewModelFactory;
 import com.openclassrooms.realestatemanager.Model.User;
 import com.openclassrooms.realestatemanager.PropertyViewModel;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.Util.Utils;
 
 /*
  First bug : textViewMain was plug with a TextView from the second activity layout
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         txtUserMail = navigationView.getHeaderView(0).findViewById(R.id.navigation_header_txt_user_mail);
         txtUsername = navigationView.getHeaderView(0).findViewById(R.id.navigation_header_txt_username);
-        this.propertyViewModel.getCurrentUser().observe(this, this::updateNavHeaderTxt);
+        if(userId > 0) this.propertyViewModel.getCurrentUser().observe(this, this::updateNavHeaderTxt);
 
         snackbarLayout = findViewById(R.id.activity_main_container_snackbar);
         isEditMode = false;
@@ -162,7 +163,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 return true;
             case R.id.menu_toolbar_item_search_property :
-                Toast.makeText(this, R.string.toolbar_item_search, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, SearchPropertyActivity.class);
+                startActivity(intent);
                 return true;
             default :
                 return super.onOptionsItemSelected(item);
@@ -274,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void updateNavHeaderTxt(User user){
         txtUserMail.setText(user.getEmail());
-        txtUsername.setText(user.getUsername());
+        txtUsername.setText(Utils.uppercaseFirstLetter(user.getUsername()));
     }
 
     /***************************/

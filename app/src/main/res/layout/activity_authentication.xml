@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/app_name"
-        android:textColor="#251A40"
+        android:textColor="#FFF"
         android:textSize="22sp"/>
 
     <TextView
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="48dp"
         android:text="Create, update and view property easily"
-        android:textColor="#251A40"
+        android:textColor="#FFF"
         android:textSize="16sp"/>
 
     <EditText

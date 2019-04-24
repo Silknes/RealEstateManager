@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.net.wifi.WifiManager;
 import android.util.DisplayMetrics;
+import android.widget.Toast;
+
+import com.openclassrooms.realestatemanager.Model.Photo;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Philippe on 21/02/2018.
@@ -99,5 +103,9 @@ public class Utils {
 
     public static boolean isUsernameCorrect(String username){
         return username.length() > 3;
+    }
+
+    public static String uppercaseFirstLetter(String str){
+        return str.substring(0,1).toUpperCase() + str.substring(1);
     }
 }

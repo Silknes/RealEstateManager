@@ -3,7 +3,7 @@
     package="com.openclassrooms.realestatemanager">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -40,7 +40,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Controller.Activities.MainActivity" />
         </activity>
-        <activity android:name=".Controller.Activities.AuthenticationActivity"></activity>
+        <activity android:name=".Controller.Activities.AuthenticationActivity" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.openclassrooms.realestatemanager.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <activity android:name=".Controller.Activities.FullScreenActivity" />
+        <activity android:name=".Controller.Activities.SearchPropertyActivity"></activity>
     </application>
 
 </manifest>

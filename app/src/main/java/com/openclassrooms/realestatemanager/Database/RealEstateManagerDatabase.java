@@ -12,17 +12,20 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.openclassrooms.realestatemanager.Database.Dao.PhotoDao;
 import com.openclassrooms.realestatemanager.Database.Dao.PropertyDao;
 import com.openclassrooms.realestatemanager.Database.Dao.UserDao;
+import com.openclassrooms.realestatemanager.Model.Photo;
 import com.openclassrooms.realestatemanager.Model.Property;
 import com.openclassrooms.realestatemanager.Model.User;
 
-@Database(entities = {Property.class, User.class}, version = 1, exportSchema = false)
+@Database(entities = {Property.class, User.class, Photo.class}, version = 1, exportSchema = false)
 public abstract class RealEstateManagerDatabase extends RoomDatabase {
     private static volatile RealEstateManagerDatabase INSTANCE;
 
     public abstract PropertyDao propertyDao();
     public abstract UserDao userDao();
+    public abstract PhotoDao photoDao();
 
     public static RealEstateManagerDatabase getInstance(Context context){
         if(INSTANCE == null){
