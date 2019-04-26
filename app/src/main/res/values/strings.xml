@@ -28,6 +28,12 @@
         <item>Available</item>
     </string-array>
 
+    <string-array name="spinner_operator">
+        <item>More than</item>
+        <item>Between</item>
+        <item>Less than</item>
+    </string-array>
+
     <string name="available">Available</string>
     <string name="sold">Sold</string>
     <string name="house">House</string>

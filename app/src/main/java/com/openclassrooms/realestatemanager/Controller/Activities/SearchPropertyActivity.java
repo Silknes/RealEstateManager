@@ -1,15 +1,24 @@
 package com.openclassrooms.realestatemanager.Controller.Activities;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
+import com.openclassrooms.realestatemanager.Controller.Fragments.PropertyFragment;
 import com.openclassrooms.realestatemanager.Controller.Fragments.SearchPropertyFragment;
+import com.openclassrooms.realestatemanager.Model.Photo;
+import com.openclassrooms.realestatemanager.Model.Property;
 import com.openclassrooms.realestatemanager.R;
+
+import java.util.List;
 
 public class SearchPropertyActivity extends AppCompatActivity {
     private SearchPropertyFragment searchPropertyFragment;
+    private boolean isRecyclerViewVisible = false;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

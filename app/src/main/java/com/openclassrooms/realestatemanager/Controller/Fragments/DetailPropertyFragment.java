@@ -70,7 +70,7 @@ public class DetailPropertyFragment extends Fragment{
     private CheckBox checkBoxSchool, checkBoxShop, checkBoxParc, checkBoxPublicTransport;
     private boolean valueSchool, valueShop, valueParc, valuePublicTransport;
 
-    private String stringSelectedDate;
+    private String stringSelectedDate, currentDate;
 
     private Property property;
     private PropertyViewModel propertyViewModel;
@@ -150,6 +150,7 @@ public class DetailPropertyFragment extends Fragment{
         userId = getContext().getSharedPreferences("MY_SHARED_PREFERENCES", Context.MODE_PRIVATE).getLong("userId", -1);
 
         property = (Property) getArguments().getSerializable("property");
+        currentDate = Utils.getTodayDate();
 
         this.configureViewModel();
         this.setViewWithPropertyData(property);
@@ -244,13 +245,13 @@ public class DetailPropertyFragment extends Fragment{
                         property.setDescription(editText.getText().toString());
                         break;
                     case R.id.fragment_detail_property_edit_price:
-                        property.setPrice(editText.getText().toString());
+                        property.setPrice(Double.parseDouble(editText.getText().toString()));
                         break;
                     case R.id.fragment_detail_property_edit_area:
-                        property.setArea(editText.getText().toString());
+                        property.setArea(Integer.parseInt(editText.getText().toString()));
                         break;
                     case R.id.fragment_detail_property_edit_nb_room:
-                        property.setNbRoom(editText.getText().toString());
+                        property.setNbRoom(Integer.parseInt(editText.getText().toString()));
                         break;
                     case R.id.fragment_detail_property_edit_address:
                         property.setAddress(editText.getText().toString());
@@ -310,7 +311,7 @@ public class DetailPropertyFragment extends Fragment{
         if(viewSwitcher.getCurrentView() == linearLayout) {
             if(saveChanges){
                 textView.setText(textViewEditMode.getText());
-                property.setSaleDate(textViewEditMode.getText().toString());
+                property.setSaleDate(Integer.parseInt(textViewEditMode.getText().toString()));
             }
         } else textViewEditMode.setText(textView.getText());
         viewSwitcher.showNext();
@@ -380,7 +381,8 @@ public class DetailPropertyFragment extends Fragment{
                     case 1 :
                         txtSaleDateTitle.setVisibility(View.VISIBLE);
                         viewSwitcherSaleDate.setVisibility(View.VISIBLE);
-                        txtSaleDateEditMode.setText(property.getSaleDate());
+                        if(property.getSaleDate() == 0) txtSaleDateEditMode.setText(Utils.formatIntDateToString(Utils.formatStringDateToInt(currentDate)));
+                        else  txtSaleDateEditMode.setText(Utils.formatIntDateToString(property.getSaleDate()));
                         break;
                     case 2 :
                         txtSaleDateTitle.setVisibility(View.GONE);
@@ -397,7 +399,7 @@ public class DetailPropertyFragment extends Fragment{
         if(property.getStatus() == 1){
             txtSaleDateTitle.setVisibility(View.VISIBLE);
             viewSwitcherSaleDate.setVisibility(View.VISIBLE);
-            if(property.getSaleDate().isEmpty()) txtSaleDateEditMode.setText(Utils.getTodayDate());
+            if(property.getSaleDate() == 0) txtSaleDateEditMode.setText(Utils.getTodayDate());
             else txtSaleDateEditMode.setText(property.getSaleDate());
         } else {
             txtSaleDateTitle.setVisibility(View.GONE);
@@ -428,13 +430,13 @@ public class DetailPropertyFragment extends Fragment{
     Then update the view with data get from the property */
     private void setViewWithPropertyData(Property property){
         if(property != null){
-            txtPrice.setText(property.getPrice());
+            txtPrice.setText("" + property.getPrice());
             txtAddress.setText(property.getAddress());
-            txtArea.setText(property.getArea());
+            txtArea.setText("" + property.getArea());
             txtDescription.setText(property.getDescription());
-            txtNbRoom.setText(property.getNbRoom());
-            txtEntryDate.setText(property.getEntryDate());
-            txtSaleDate.setText(property.getSaleDate());
+            txtNbRoom.setText("" + property.getNbRoom());
+            txtEntryDate.setText(Utils.formatIntDateToString(property.getEntryDate()));
+            txtSaleDate.setText("" + property.getSaleDate());
             switch(property.getStatus()){
                 case 1 :
                     txtStatus.setText(getResources().getString(R.string.sold));

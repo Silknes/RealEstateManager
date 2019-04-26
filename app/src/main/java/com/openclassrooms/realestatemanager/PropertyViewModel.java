@@ -114,4 +114,59 @@ public class PropertyViewModel extends ViewModel {
             photoDataSource.updatePhoto(photo);
         });
     }
+
+    /***********************************
+    **** Method use with the search ****
+    ***********************************/
+
+    public LiveData<List<Property>> getPropertyBetweenTwoPrice(double minPrice, double maxPrice){
+        return propertyDataSource.getPropertyBetweenTwoPrice(minPrice, maxPrice);
+    }
+
+    public LiveData<List<Property>> getPropertyLessThanPrice(double price){
+        return propertyDataSource.getPropertyLessThanPrice(price);
+    }
+
+    public LiveData<List<Property>> getPropertyMoreThanPrice(double price){
+        return propertyDataSource.getPropertyMoreThanPrice(price);
+    }
+
+    public LiveData<List<Property>> getPropertyBetweenArea(int minArea, int maxArea){
+        return propertyDataSource.getPropertyBetweenArea(minArea, maxArea);
+    }
+
+    public LiveData<List<Property>> getPropertyLessThanArea(int area){
+        return propertyDataSource.getPropertyLessThanArea(area);
+    }
+
+    public LiveData<List<Property>> getPropertyMoreThanArea(int area){
+        return propertyDataSource.getPropertyMoreThanArea(area);
+    }
+
+    public LiveData<List<Property>> getPropertyBetweenNbRoom(int minNbRoom, int maxNbRoom){
+        return propertyDataSource.getPropertyBetweenNbRoom(minNbRoom, maxNbRoom);
+    }
+
+    public LiveData<List<Property>> getPropertyLessThanNbRoom(int minNbRoom){
+        return propertyDataSource.getPropertyLessThanNbRoom(minNbRoom);
+    }
+
+    public LiveData<List<Property>> getPropertyMoreThanNbRoom(int minNbRoom){
+        return propertyDataSource.getPropertyMoreThanNbRoom(minNbRoom);
+    }
+
+
+
+    public LiveData<List<Property>> getRequestProperty(double minPrice, double maxPrice,
+                                                       int minArea, int maxArea,
+                                                       int minNbRoom, int maxNbRoom,
+                                                       boolean schoolState, boolean shopState,
+                                                       boolean parcState, boolean transportState,
+                                                       int choosenType, int minEntryDate,
+                                                       int maxEntryDate, int minSaleDate,
+                                                       int maxSaleDate){
+        return propertyDataSource.getRequestProperty(minPrice, maxPrice, minArea, maxArea,
+                minNbRoom, maxNbRoom, schoolState, shopState, parcState, transportState,
+                choosenType, minEntryDate, maxEntryDate, minSaleDate, maxSaleDate);
+    }
 }

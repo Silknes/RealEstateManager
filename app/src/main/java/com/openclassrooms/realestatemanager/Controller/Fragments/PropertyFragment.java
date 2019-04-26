@@ -134,5 +134,4 @@ public class PropertyFragment extends Fragment{
     private boolean isLandscape(){
         return getResources().getBoolean(R.bool.is_landscape);
     }
-
 }

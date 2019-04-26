@@ -66,7 +66,10 @@ public class AddPropertyFragment extends DialogFragment implements AdapterView.O
     private Button btnSubmit;
     private int idSpinnerType;
     private TextView txtEntryDate, txtAgent;
-    private String stringSelectedDate, valuePrice, valueArea, valueNbRoom, valueAddress, valueDescription, photoPath;
+    private String stringSelectedDate, valueAddress, valueDescription, photoPath;
+    private int valueSelectedDate;
+    private double valuePrice;
+    private int valueArea, valueNbRoom;
     private boolean isEditPrice, isEditArea, isEditNbRoom, isEditAddress, isEditDescription;
 
     private PropertyViewModel propertyViewModel;
@@ -131,6 +134,7 @@ public class AddPropertyFragment extends DialogFragment implements AdapterView.O
         this.setSpinner();
 
         stringSelectedDate = Utils.getTodayDate();
+        valueSelectedDate = Utils.formatStringDateToInt(stringSelectedDate);
         txtEntryDate.setText(stringSelectedDate);
         linearEntryDate.setOnClickListener(view12 -> configureDatePickerDialog());
 
@@ -179,7 +183,7 @@ public class AddPropertyFragment extends DialogFragment implements AdapterView.O
 
     private void createPropertyInDB(){
         property = new Property(userId, idSpinnerType, valueAddress, valueDescription,
-                stringSelectedDate, valuePrice, valueArea, valueNbRoom, checkboxSchool,
+                valueSelectedDate, valuePrice, valueArea, valueNbRoom, checkboxSchool,
                 checkboxShop, checkboxParc, checkboxPublicTransport);
         this.propertyViewModel.createProperty(property);
     }
@@ -200,19 +204,19 @@ public class AddPropertyFragment extends DialogFragment implements AdapterView.O
                 switch (editText.getId()){
                     case R.id.fragment_add_property_edit_txt_price:
                         if(charSequence.toString().trim().length() != 0) {
-                            valuePrice = charSequence.toString().trim();
+                            valuePrice = Double.parseDouble(charSequence.toString());
                             isEditPrice = true;
                         } else isEditPrice = false;
                         break;
                     case R.id.fragment_add_property_edit_txt_area:
                         if(charSequence.toString().trim().length() != 0) {
-                            valueArea = charSequence.toString().trim();
+                            valueArea = Integer.parseInt(charSequence.toString());
                             isEditArea = true;
                         } else isEditArea = false;
                         break;
                     case R.id.fragment_add_property_edit_txt_nb_room:
                         if(charSequence.toString().trim().length() != 0) {
-                            valueNbRoom = charSequence.toString().trim();
+                            valueNbRoom = Integer.parseInt(charSequence.toString());
                             isEditNbRoom = true;
                         } else isEditNbRoom = false;
                         break;
@@ -257,6 +261,7 @@ public class AddPropertyFragment extends DialogFragment implements AdapterView.O
     private void configureDatePickerDialog(){
         DatePickerDialog.OnDateSetListener onDateSetListener = (datePicker, year, month, day) -> {
             stringSelectedDate = Utils.formatStringDate(year, month, day);
+            valueSelectedDate = Utils.formatIntDate(year, month, day);
             txtEntryDate.setText(stringSelectedDate);
             isBtnEnable();
         };

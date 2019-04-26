@@ -15,11 +15,12 @@ public class Property implements Serializable {
     private long id;
     private long userId;
 
-    private String address, description, entryDate, saleDate, price, area, nbRoom;
-    private int type, status;
+    private String address, description;
+    private double price;
+    private int type, status, area, nbRoom, entryDate, saleDate;
     private boolean checkboxSchool, checkboxShop, checkboxParc, checkboxPublicTransport;
 
-    public Property(long userId, int type, String address, String description, String entryDate, String price, String area, String nbRoom, boolean checkboxSchool, boolean checkboxShop, boolean checkboxParc, boolean checkboxPublicTransport) {
+    public Property(long userId, int type, String address, String description, int entryDate, double price, int area, int nbRoom, boolean checkboxSchool, boolean checkboxShop, boolean checkboxParc, boolean checkboxPublicTransport) {
         this.userId = userId;
         this.type = type;
         this.address = address;
@@ -84,43 +85,43 @@ public class Property implements Serializable {
         this.status = status;
     }
 
-    public String getEntryDate() {
+    public int getEntryDate() {
         return entryDate;
     }
 
-    public void setEntryDate(String entryDate) {
+    public void setEntryDate(int entryDate) {
         this.entryDate = entryDate;
     }
 
-    public String getSaleDate() {
+    public int getSaleDate() {
         return saleDate;
     }
 
-    public void setSaleDate(String saleDate) {
+    public void setSaleDate(int saleDate) {
         this.saleDate = saleDate;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public String getArea() {
+    public int getArea() {
         return area;
     }
 
-    public void setArea(String area) {
+    public void setArea(int area) {
         this.area = area;
     }
 
-    public String getNbRoom() {
+    public int getNbRoom() {
         return nbRoom;
     }
 
-    public void setNbRoom(String nbRoom) {
+    public void setNbRoom(int nbRoom) {
         this.nbRoom = nbRoom;
     }
 

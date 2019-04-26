@@ -44,6 +44,19 @@ public class Utils {
         return dateFormat.format(new Date());
     }
 
+    public static int formatStringDateToInt(String date){
+         return Integer.parseInt(date.replace("/", ""));
+    }
+
+    public static String formatIntDateToString(int date){
+        String newDate = "" + date;
+        String day = newDate.substring(0, 2) + "/";
+        String month = newDate.substring(2, 4) + "/";
+        String year = newDate.substring(4,8);
+
+        return day + month + year;
+    }
+
     public static Date convertStringToDate(String stringToConvert){
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date convertedDate = new Date();
@@ -66,6 +79,19 @@ public class Utils {
             }
         }
         return strDay + "/" + strMonth + "/" + year;
+    }
+
+    public static int formatIntDate(int year, int month, int day){
+        month = month + 1;
+        String strMonth = "" + month;
+        String strDay = "" + day;
+        if(month < 10) {
+            strMonth = "0" + strMonth;
+            if(day < 10) {
+                strDay = "0" + strDay;
+            }
+        }
+        return Integer.parseInt(strDay + "" + strMonth + "" + year);
     }
 
     public static boolean compareDate(Date dateSelected, Date todayDate){
