@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Controller.Fragments.RegisterFragment"
+    android:orientation="vertical">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/fragment_register_margin_bottom_edit_text"
+        android:hint="@string/authentication_email_hint"
+        android:textColorHint="@color/white"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/white"
+        android:id="@+id/fragment_register_edit_email"
+        android:theme="@style/MyTheme.EditText"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/fragment_register_margin_bottom_edit_text"
+        android:hint="@string/authentication_password_hint"
+        android:textColorHint="@color/white"
+        android:inputType="textPassword"
+        android:textColor="@color/white"
+        android:id="@+id/fragment_register_edit_password"
+        android:theme="@style/MyTheme.EditText"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/authentication_username_hint"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
+        android:id="@+id/fragment_register_edit_username"
+        android:theme="@style/MyTheme.EditText"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_register_email_already_taken"
+        android:text="@string/authentication_email_taken"
+        android:textColor="@android:color/holo_red_light"
+        android:visibility="gone"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/authentication_sign_in_btn"
+        android:id="@+id/fragment_register_btn_sign_in"
+        android:enabled="false"
+        android:textColor="@color/white"
+        android:background="@drawable/custom_button_disabled"/>
+
+</LinearLayout>

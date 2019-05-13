@@ -11,7 +11,6 @@ import com.openclassrooms.realestatemanager.Model.Photo;
 import com.openclassrooms.realestatemanager.Model.Property;
 import com.openclassrooms.realestatemanager.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HouseAdapter extends RecyclerView.Adapter<HouseViewHolder> {

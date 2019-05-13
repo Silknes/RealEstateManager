@@ -2,6 +2,8 @@ package com.openclassrooms.realestatemanager.Util;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
@@ -9,8 +11,10 @@ import android.widget.Toast;
 import com.openclassrooms.realestatemanager.Model.Photo;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -44,17 +48,31 @@ public class Utils {
         return dateFormat.format(new Date());
     }
 
+    public static int formatCurrentDateToInt(){
+        Calendar calendar = Calendar.getInstance();
+        String day = "" + calendar.get(Calendar.DAY_OF_MONTH);
+        if(calendar.get(Calendar.DAY_OF_MONTH) < 10) day = "0" + day;
+        int valueMonth = calendar.get(Calendar.MONTH) + 1;
+        String month = "" + valueMonth;
+        if(calendar.get(Calendar.MONTH) < 10) month = "0" + month;
+        int year = calendar.get(Calendar.YEAR);
+        return Integer.parseInt("" + year + month + day);
+    }
+
     public static int formatStringDateToInt(String date){
-         return Integer.parseInt(date.replace("/", ""));
+        String newDate = "" + date.replace("/", "");
+        return Integer.parseInt(newDate);
     }
 
     public static String formatIntDateToString(int date){
         String newDate = "" + date;
-        String day = newDate.substring(0, 2) + "/";
-        String month = newDate.substring(2, 4) + "/";
-        String year = newDate.substring(4,8);
-
-        return day + month + year;
+        String day = "", month = "", year = "";
+        if(newDate.length() == 8){
+            day = newDate.substring(6, 8) + "/";
+            month = newDate.substring(4,6) + "/";
+            year = newDate.substring(0,4);
+            return day + month + year;
+        } else return newDate;
     }
 
     public static Date convertStringToDate(String stringToConvert){
@@ -72,12 +90,8 @@ public class Utils {
         month = month + 1;
         String strMonth = "" + month;
         String strDay = "" + day;
-        if(month < 10) {
-            strMonth = "0" + strMonth;
-            if(day < 10) {
-                strDay = "0" + strDay;
-            }
-        }
+        if(day < 10) strDay = "0" + strDay;
+        if(month < 10) strMonth = "0" + strMonth;
         return strDay + "/" + strMonth + "/" + year;
     }
 
@@ -85,13 +99,9 @@ public class Utils {
         month = month + 1;
         String strMonth = "" + month;
         String strDay = "" + day;
-        if(month < 10) {
-            strMonth = "0" + strMonth;
-            if(day < 10) {
-                strDay = "0" + strDay;
-            }
-        }
-        return Integer.parseInt(strDay + "" + strMonth + "" + year);
+        if(day < 10) strDay = "0" + strDay;
+        if(month < 10) strMonth = "0" + strMonth;
+        return Integer.parseInt("" + year + strMonth + strDay);
     }
 
     public static boolean compareDate(Date dateSelected, Date todayDate){
@@ -105,8 +115,9 @@ public class Utils {
      * @return
      */
     public static Boolean isInternetAvailable(Context context){
-        WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-        return wifi.isWifiEnabled();
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
     }
 
     public static int convertDpToPx(int pxValue){
@@ -133,5 +144,17 @@ public class Utils {
 
     public static String uppercaseFirstLetter(String str){
         return str.substring(0,1).toUpperCase() + str.substring(1);
+    }
+
+    public static double calculateMonthly(double amount, double rate, int duration){
+        double realRate = rate/100;
+        double monthly = ((amount*realRate)/12)/(1-Math.pow(1+(realRate/12), duration*12*-1));
+
+        DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(2);
+
+        monthly = Double.parseDouble(decimalFormat.format(monthly));
+
+        return monthly;
     }
 }

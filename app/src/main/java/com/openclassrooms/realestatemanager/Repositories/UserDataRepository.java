@@ -20,6 +20,10 @@ public class UserDataRepository {
         return this.userDao.getUserToLogIn(userEmail, userPassword);
     }
 
+    public LiveData<User> isEmailAlreadyTaken(String userEmail){
+        return this.userDao.isEmailAlreadyTaken(userEmail);
+    }
+
     public void createUser(User user){
         userDao.createUser(user);
     }

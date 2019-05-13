@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.Model;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
 import android.net.Uri;
 
 @Entity(foreignKeys = @ForeignKey(entity = Property.class,
@@ -17,6 +18,8 @@ public class Photo {
     private String description;
     private String uriPhoto;
     private int position;
+
+    public Photo(){}
 
     public Photo(long propertyId, String description, String uriPhoto, int position) {
         this.propertyId = propertyId;
@@ -63,5 +66,14 @@ public class Photo {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public static Photo fromContentValues(ContentValues values){
+        final Photo photo = new Photo();
+        if(values.containsKey("propertyId")) photo.setPropertyId(values.getAsLong("propertyId"));
+        if(values.containsKey("description")) photo.setDescription(values.getAsString("description"));
+        if(values.containsKey("uriPhoto")) photo.setUriPhoto(values.getAsString("uriPhoto"));
+        if(values.containsKey("position")) photo.setPosition(values.getAsInteger("position"));
+        return photo;
     }
 }

@@ -5,6 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
+import android.database.Cursor;
 
 import com.openclassrooms.realestatemanager.Model.Photo;
 
@@ -28,4 +29,11 @@ public interface PhotoDao {
 
     @Query("DELETE FROM Photo WHERE id = :photoId")
     int deletePhoto(long photoId);
+
+    /**************************************
+    ***** Query used by ContentProvider ***
+    **************************************/
+
+    @Query("SELECT * FROM Photo WHERE position = 1")
+    Cursor getMainPhotosWithCursor();
 }

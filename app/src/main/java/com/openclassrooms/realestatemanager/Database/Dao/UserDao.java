@@ -20,6 +20,9 @@ public interface UserDao {
     @Query("SELECT * FROM User WHERE email = :userEmail AND password = :userPassword")
     LiveData<User> getUserToLogIn(String userEmail, String userPassword);
 
+    @Query("SELECT * FROM User Where email = :userEmail")
+    LiveData<User> isEmailAlreadyTaken(String userEmail);
+
     @Insert
     long insertUser(User user);
 

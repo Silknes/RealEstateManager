@@ -1,15 +1,17 @@
 package com.openclassrooms.realestatemanager.Controller.Activities;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,48 +22,50 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.Controller.Fragments.AddPropertyFragment;
-import com.openclassrooms.realestatemanager.Controller.Fragments.DetailPropertyFragment;
+import com.openclassrooms.realestatemanager.Controller.Fragments.EditPropertyFragment;
+import com.openclassrooms.realestatemanager.Controller.Fragments.MortgageSimulatorFragment;
 import com.openclassrooms.realestatemanager.Controller.Fragments.PropertyFragment;
+import com.openclassrooms.realestatemanager.Controller.Fragments.SearchPropertyFragment;
 import com.openclassrooms.realestatemanager.Injections.Injection;
 import com.openclassrooms.realestatemanager.Injections.ViewModelFactory;
+import com.openclassrooms.realestatemanager.Model.Photo;
+import com.openclassrooms.realestatemanager.Model.Property;
 import com.openclassrooms.realestatemanager.Model.User;
-import com.openclassrooms.realestatemanager.PropertyViewModel;
+import com.openclassrooms.realestatemanager.View.PropertyViewModel;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.Util.Utils;
 
+import java.util.List;
+
+import pub.devrel.easypermissions.EasyPermissions;
+
 /*
- First bug : textViewMain was plug with a TextView from the second activity layout
- Resolve it by replace the wrong id by the good id from the main activity layout
+ * First bug : textViewMain was plug with a TextView from the second activity layout
+ * Resolve it by replace the wrong id by the good id from the main activity layout
+ * Second bug : quantity was an Integer instead of a String
+ * Resolve it by change the type of quantity to String and add : "" + before Utils.convert...
+ */
 
- Second bug : quantity was an Integer instead of a String
- Resolve it by change the type of quantity to String and add : "" + before Utils.convert...
-*/
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PropertyFragment.onItemClickedListener, AddPropertyFragment.OnButtonClickedListener, SearchPropertyFragment.OnItemClickedListener, EditPropertyFragment.OnButtonClickedListener{
+    private String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static final int RC_MAPS_ACTIVITY = 1;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PropertyFragment.onItemClickedListener{
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
 
-    private DetailPropertyFragment detailPropertyFragment;
-    private AddPropertyFragment addPropertyFragment;
     private FragmentManager fragmentManager;
-
-    private boolean isEditMode;
-    private LinearLayout snackbarLayout;
-
-    private long userId;
-
-    private SharedPreferences.Editor editor;
+    private PropertyFragment propertyFragment;
+    private AddPropertyFragment addPropertyFragment;
+    private EditPropertyFragment editPropertyFragment;
 
     private NavigationView navigationView;
     private TextView txtUserMail, txtUsername;
 
-    //private TextView textViewMain;
-    //private TextView textViewQuantity;
+    private boolean[] pois = new boolean[]{false, false, false, false};
 
     private PropertyViewModel propertyViewModel;
 
@@ -70,37 +74,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences sharedPreferences = this.getSharedPreferences("MY_SHARED_PREFERENCES", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        if(!EasyPermissions.hasPermissions(this, perms)){
+            Intent intent = new Intent(this, PermissionsActivity.class);
+            startActivity(intent);
+        } else {
+            long userId = getSharedPreferences("MY_SHARED_PREFERENCES", Context.MODE_PRIVATE).getLong("userId", -1);
+            fragmentManager = getSupportFragmentManager();
 
-        fragmentManager = getSupportFragmentManager();
+            if(userId <= 0){
+                Intent intent = new Intent(this, AuthenticationActivity.class);
+                startActivity(intent);
+            } else {
 
-        userId = getSharedPreferences("MY_SHARED_PREFERENCES", Context.MODE_PRIVATE).getLong("userId", -1);
-        this.configureViewModel();
-        this.getCurrentUser(userId);
+                this.configureAndShowDefaultFragment();
+                this.configureToolbar();
+                this.configureDrawerLayout();
+                this.configureNavigationView();
 
-        this.configureToolbar();
-        this.configureDrawerLayout();
-        this.configureNavigationView();
+                txtUserMail = navigationView.getHeaderView(0).findViewById(R.id.navigation_header_txt_user_mail);
+                txtUsername = navigationView.getHeaderView(0).findViewById(R.id.navigation_header_txt_username);
 
-        txtUserMail = navigationView.getHeaderView(0).findViewById(R.id.navigation_header_txt_user_mail);
-        txtUsername = navigationView.getHeaderView(0).findViewById(R.id.navigation_header_txt_username);
-        if(userId > 0) this.propertyViewModel.getCurrentUser().observe(this, this::updateNavHeaderTxt);
-
-        snackbarLayout = findViewById(R.id.activity_main_container_snackbar);
-        isEditMode = false;
-
-        /*this.textViewMain = findViewById(R.id.activity_main_activity_text_view_main);
-        this.textViewQuantity = findViewById(R.id.activity_main_activity_text_view_quantity);
-
-        this.configureTextViewMain();
-        this.configureTextViewQuantity();*/
+                this.configureViewModel();
+                this.getCurrentUser(userId);
+            }
+        }
     }
 
-    private void configureViewModel(){
-        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory(this);
-        this.propertyViewModel = ViewModelProviders.of(this, viewModelFactory).get(PropertyViewModel.class);
-    }
+    /**********************************************
+    **** Configure menus and menu item actions ****
+    **********************************************/
 
     private void configureToolbar(){
         toolbar = findViewById(R.id.toolbar);
@@ -130,56 +132,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.menu_toolbar_item_add_property :
-                if(isLandscape()){
+                if(!fragmentManager.getFragments().contains(addPropertyFragment)){
                     addPropertyFragment = new AddPropertyFragment();
-                    removeAndReplaceFragment(detailPropertyFragment, addPropertyFragment);
-                }
-                else {
-                    Intent intent = new Intent(this, AddPropertyActivity.class);
-                    startActivity(intent);
+                    this.configureAndShowFragment(addPropertyFragment);
                 }
                 return true;
             case R.id.menu_toolbar_item_edit_property :
-                if(fragmentManager.getFragments().contains(detailPropertyFragment)){
-                    if(isEditMode){
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setMessage("Save changes ?")
-                                .setPositiveButton("Yes", (dialogInterface, i) -> {
-                                    detailPropertyFragment.updateDetailProperty(true);
-                                    isEditMode = false;
-                                })
-                                .setNegativeButton("No", (dialogInterface, i) -> {
-                                    detailPropertyFragment.updateDetailProperty(false);
-                                    isEditMode = false;
-                                })
-                                .show();
-                    }else{
-                        Snackbar.make(snackbarLayout, "Enter edit mode", Snackbar.LENGTH_SHORT).show();
-                        detailPropertyFragment.updateDetailProperty(false);
-                        isEditMode = true;
-                    }
-                }else{
-                    Snackbar.make(snackbarLayout, "Please choose a property to edit", Snackbar.LENGTH_SHORT).show();
-                }
+                this.configureClickOnItemEdit();
                 return true;
             case R.id.menu_toolbar_item_search_property :
-                Intent intent = new Intent(this, SearchPropertyActivity.class);
-                startActivity(intent);
+                SearchPropertyFragment searchPropertyFragment = new SearchPropertyFragment();
+                this.configureAndShowFragment(searchPropertyFragment);
                 return true;
             default :
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    // Onclick item edit on toolbar, create an alert dialog to know if user add to save changes or not
+    private void configureClickOnItemEdit(){
+        if(fragmentManager.getFragments().contains(editPropertyFragment)){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.save_changes))
+                    .setPositiveButton(getString(R.string.alert_dialog_default_positive_message), (dialogInterface, i) -> editPropertyFragment.updateDB())
+                    .setNegativeButton(getString(R.string.alert_dialog_default_negative_message), (dialogInterface, i) -> {})
+                    .show();
+        } else Toast.makeText(this, getString(R.string.warning_message_edit_button), Toast.LENGTH_SHORT).show();
+    }
+
+    // Configuring action to do when user select an item on the navigation drawer
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.activity_main_drawer_map :
-                Toast.makeText(this, R.string.drawer_item_map, Toast.LENGTH_SHORT).show();
+                if(Utils.isInternetAvailable(this)){
+                    Intent intent = new Intent(this, MapsActivity.class);
+                    startActivityForResult(intent, RC_MAPS_ACTIVITY);
+                } else Toast.makeText(this, getString(R.string.warning_message_no_internet), Toast.LENGTH_SHORT).show();
                 break;
             case R.id.activity_main_drawer_logout :
-                editor.putLong("userId", -1).apply();
-                getCurrentUser(-1);
+                SharedPreferences sharedPreferences = this.getSharedPreferences("MY_SHARED_PREFERENCES", Context.MODE_PRIVATE);
+                sharedPreferences.edit().putLong("userId", -1).apply();
+                Intent intentAuth = new Intent(this, AuthenticationActivity.class);
+                startActivity(intentAuth);
                 break;
             default :
                 break;
@@ -188,36 +183,134 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void configureAndShowPropertyFragment(){
-        if(!isLandscape()){
-            PropertyFragment propertyFragment = (PropertyFragment) fragmentManager
-                    .findFragmentById(R.id.activity_main_fragment_container);
-            if(propertyFragment == null){
-                propertyFragment = new PropertyFragment();
-                fragmentManager.beginTransaction()
-                        .add(R.id.activity_main_fragment_container, propertyFragment)
-                        .commit();
-            }
+    // Configure action when checkbox state change
+    public void onCheckboxClicked(View view){
+        boolean isChecked = ((CheckBox) view).isChecked();
+        switch(view.getId()){
+            case R.id.fragment_add_property_checkbox_school:
+                pois[0] = isChecked;
+                break;
+            case R.id.fragment_add_property_checkbox_shop:
+                pois[1] = isChecked;
+                break;
+            case R.id.fragment_add_property_checkbox_parc:
+                pois[2] = isChecked;
+                break;
+            case R.id.fragment_add_property_checkbox_public_transport:
+                pois[3] = isChecked;
+                break;
         }
-        else {
-            PropertyFragment propertyFragment = (PropertyFragment) fragmentManager
-                    .findFragmentById(R.id.activity_main_fragment_container);
-            detailPropertyFragment = (DetailPropertyFragment) fragmentManager
-                    .findFragmentById(R.id.activity_detail_property_fragment_container);
-            if(propertyFragment == null && detailPropertyFragment == null){
-                propertyFragment = new PropertyFragment();
-                detailPropertyFragment = new DetailPropertyFragment();
-                fragmentManager.beginTransaction()
-                        .add(R.id.activity_main_fragment_container, propertyFragment)
-                        .add(R.id.activity_main_fragment_container, detailPropertyFragment)
-                        .commit();
+        addPropertyFragment.updatePoi(pois);
+    }
+
+    /***********************************************
+    **** Manage DB and update view if necessary ****
+    ***********************************************/
+
+    // Configuring the view model, necessary to get user data
+    private void configureViewModel(){
+        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory(this);
+        this.propertyViewModel = ViewModelProviders.of(this, viewModelFactory).get(PropertyViewModel.class);
+    }
+
+    // Method that get the current user
+    private void getCurrentUser(long userId){
+        this.propertyViewModel.updateCurrentUser(userId);
+        this.propertyViewModel.getCurrentUser().observe(this, this::updateNavHeaderTxt);
+    }
+
+    // Method that update 2 views after getting user data
+    private void updateNavHeaderTxt(User user){
+        txtUserMail.setText(user.getEmail());
+        txtUsername.setText(Utils.uppercaseFirstLetter(user.getUsername()));
+    }
+
+    /***************************
+    **** Managing fragments ****
+    ***************************/
+
+    // Method that init fragment
+    private void configureAndShowDefaultFragment(){
+        propertyFragment = (PropertyFragment) fragmentManager
+                .findFragmentById(R.id.activity_main_fragment_container);
+        if(propertyFragment == null) {
+            propertyFragment = new PropertyFragment();
+            fragmentManager.beginTransaction()
+                    .add(R.id.activity_main_fragment_container, propertyFragment)
+                    .commit();
+        }
+    }
+
+    // Method used to swap to an other fragment
+    private void configureAndShowFragment(Fragment fragment){
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        if(!isLandscape()) transaction.replace(R.id.activity_main_fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+        else transaction.replace(R.id.activity_main_second_fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // Method that manage the click on recyclerView items from PropertyFragment (used when phone is in landscape)
+    @Override
+    public void onItemClicked(Property property) {
+        editPropertyFragment = new EditPropertyFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("property", property);
+        editPropertyFragment.setArguments(bundle);
+        this.configureAndShowFragment(editPropertyFragment);
+    }
+
+    @Override
+    public void onSearchButtonClicked(List<Property> propertyList, List<Photo> photoList) {
+        propertyFragment.test(propertyList, photoList);
+    }
+
+    @Override
+    public void onDataReceived(boolean isNotEmpty) {
+        if(isLandscape()){
+            if(!isNotEmpty) {
+                addPropertyFragment = new AddPropertyFragment();
+                this.configureAndShowFragment(addPropertyFragment);
             }
         }
     }
 
-    private void removeAndReplaceFragment(Fragment fragmentToRemove, Fragment fragmentToAdd){
-        fragmentManager.beginTransaction().remove(fragmentToRemove).commit();
-        fragmentManager.beginTransaction().add(R.id.activity_main_fragment_container, fragmentToAdd).commit();
+    // Method that manage the click on the button in AddPropertyFragment
+    @Override
+    public void onAddPropertyButtonClicked(Property property) {
+        if(!isLandscape()){
+            propertyFragment = new PropertyFragment();
+            this.configureAndShowFragment(propertyFragment);
+        } else {
+            propertyFragment.getAllProperties();
+            editPropertyFragment = new EditPropertyFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("property", property);
+            editPropertyFragment.setArguments(bundle);
+            this.configureAndShowFragment(editPropertyFragment);
+        }
+    }
+
+    // Method that manage the click on the button in EditPropertyFragment
+    @Override
+    public void onMortgageSimulatorButtonClicked(double price) {
+        MortgageSimulatorFragment mortgageSimulatorFragment = new MortgageSimulatorFragment();
+        Bundle bundle = new Bundle();
+        bundle.putDouble("amount", price);
+        mortgageSimulatorFragment.setArguments(bundle);
+        this.configureAndShowFragment(mortgageSimulatorFragment);
+    }
+
+    /**********************
+    **** Other methods ****
+    **********************/
+
+    // Get a value that define if phone is in portrait or not
+    private boolean isLandscape(){
+        return getResources().getBoolean(R.bool.is_landscape);
     }
 
     @Override
@@ -227,68 +320,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else super.onBackPressed();
     }
 
-    private boolean isLandscape(){
-        return getResources().getBoolean(R.bool.is_landscape);
-    }
-
+    // Getting the result of MapsActivity that return a property
     @Override
-    public void onItemClicked(int position) {
-        if(!fragmentManager.getFragments().contains(detailPropertyFragment)){
-            detailPropertyFragment = new DetailPropertyFragment();
-            removeAndReplaceFragment(addPropertyFragment, detailPropertyFragment);
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == RC_MAPS_ACTIVITY && resultCode == RESULT_OK){
+            editPropertyFragment = new EditPropertyFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("property", data.getSerializableExtra("property"));
+            editPropertyFragment.setArguments(bundle);
+            this.configureAndShowFragment(editPropertyFragment);
         }
     }
-
-    public void onCheckboxClicked(View view){
-        boolean isChecked = ((CheckBox) view).isChecked();
-
-        switch(view.getId()){
-            case R.id.fragment_add_property_checkbox_school:
-                if(isChecked) Toast.makeText(this, "School Checked", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(this, "School Unchecked", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.fragment_add_property_checkbox_shop:
-                if(isChecked) Toast.makeText(this, "Shop Checked", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(this, "Shop Unchecked", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.fragment_add_property_checkbox_parc:
-                if(isChecked) Toast.makeText(this, "Parc Checked", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(this, "Parc Unchecked", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.fragment_add_property_checkbox_public_transport:
-                if(isChecked) Toast.makeText(this, "Public Transport Checked", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(this, "Public Transport Unchecked", Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-
-    private void getCurrentUser(long userId){
-        this.propertyViewModel.updateCurrentUser(userId);
-        this.propertyViewModel.getCurrentUser().observe(this, this::startAuthenticationActivity);
-    }
-
-    private void startAuthenticationActivity(User user){
-        if(user == null){
-            Intent intent = new Intent(this, AuthenticationActivity.class);
-            startActivity(intent);
-        } else this.configureAndShowPropertyFragment();
-    }
-
-    private void updateNavHeaderTxt(User user){
-        txtUserMail.setText(user.getEmail());
-        txtUsername.setText(Utils.uppercaseFirstLetter(user.getUsername()));
-    }
-
-    /***************************/
-
-    /*private void configureTextViewMain(){
-        this.textViewMain.setTextSize(15);
-        this.textViewMain.setText("Le premier bien immobilier enregistré vaut ");
-    }
-
-    private void configureTextViewQuantity(){
-        String quantity = "" + Utils.convertDollarToEuro(100);
-        this.textViewQuantity.setTextSize(20);
-        this.textViewQuantity.setText(quantity);
-    }*/
 }

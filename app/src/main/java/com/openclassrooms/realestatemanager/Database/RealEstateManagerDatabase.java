@@ -39,21 +39,4 @@ public abstract class RealEstateManagerDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
-
-    private static Callback prepopulateDatabase(){
-        return new Callback() {
-            @Override
-            public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                super.onCreate(db);
-
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("id", 1);
-                contentValues.put("username", "Eliott Dupau");
-                contentValues.put("email", "eliott.dupau@gmail.com");
-                contentValues.put("password", "E93d9aa753");
-
-                db.insert("User", OnConflictStrategy.IGNORE, contentValues);
-            }
-        };
-    }
 }

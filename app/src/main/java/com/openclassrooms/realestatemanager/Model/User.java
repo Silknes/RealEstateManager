@@ -9,14 +9,14 @@ public class User {
     @PrimaryKey(autoGenerate = true)
     private long id;
 
-    private String username;
     private String email;
     private String password;
+    private String username;
 
-    public User(String username, String email, String password) {
-        this.username = username;
+    public User(String email, String password, String username) {
         this.email = email;
         this.password = password;
+        this.username = username;
     }
 
     public long getId() {
@@ -25,14 +25,6 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
@@ -49,5 +41,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

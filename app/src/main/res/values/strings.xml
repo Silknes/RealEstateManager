@@ -1,21 +1,73 @@
 <resources>
     <string name="app_name">Real Estate Manager</string>
+    <string name="app_slogan">Create, update and view property easily</string>
+
+    <string name="api_key">AIzaSyBVaOjoUvAaqyz-9eRAcn0qMNaViPtnA8A</string>
 
     <string name="toolbar_item_add">Add Property</string>
     <string name="toolbar_item_edit">Edit Property</string>
     <string name="toolbar_item_search">Search Property</string>
+
+    <string name="button_search">Search</string>
+
+    <string name="no_property">No property created yet !</string>
+
+    <string name="save_changes">Save changes ?</string>
+    <string name="alert_dialog_default_positive_message">Yes</string>
+    <string name="alert_dialog_default_negative_message">No</string>
+    <string name="warning_message_edit_button">Please select a property</string>
+    <string name="warning_message_no_internet">Need an internet connection to display property in a map</string>
 
     <string name="drawer_item_map">Show in map</string>
     <string name="drawer_item_logout">Logout</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="title_media">Media</string>
+    <string name="title_main_information">Main information</string>
+    <string name="title_other_information">Other information</string>
+    <string name="title_mandatory_statement">Mandatory statement</string>
+    <string name="title_optional_statement">Optional statement</string>
+
+    <string name="property_main_data">Main information</string>
     <string name="property_type">Type</string>
     <string name="property_price">Price</string>
+    <string name="property_price_in_dollars">Price ($)</string>
     <string name="property_area">Area</string>
+    <string name="property_area_in_meters">Area (m²)</string>
+    <string name="property_nb_room">Nb Room</string>
+    <string name="property_postal_code">Postal Code</string>
+    <string name="property_city">City</string>
+    <string name="property_address">Address</string>
+    <string name="property_house_nb">House nb</string>
+    <string name="property_description">Description</string>
+    <string name="property_poi">Point of interest</string>
+    <string name="property_poi_school">School</string>
+    <string name="property_poi_shop">Shop</string>
+    <string name="property_poi_parc">Parc</string>
+    <string name="property_poi_transport">Public transport</string>
+    <string name="property_status">Status</string>
+    <string name="property_entry_date">Date of entry</string>
+    <string name="property_sale_date">Date of sale</string>
+    <string name="property_agent">Real estate agent :</string>
+    <string name="property_adding_image">Add image</string>
+    <string name="property_submit">Submit</string>
+
+    <string name="min_price">Min price</string>
+    <string name="max_price">Max price</string>
+    <string name="min_area">Min area</string>
+    <string name="max_area">Max area</string>
+    <string name="min_nb_room">Min nb room</string>
+    <string name="max_nb_room">Max nb room</string>
+    <string name="min_entry_date">Min entry date</string>
+    <string name="max_entry_date">Max entry date</string>
+    <string name="min_sale_date">Min sale date</string>
+    <string name="max_sale_date">Max sale date</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
 
     <string-array name="spinner_type">
-        <item>Select type</item>
+        <item>Type</item>
         <item>House</item>
         <item>Apartment</item>
         <item>Loft</item>
@@ -23,7 +75,7 @@
     </string-array>
 
     <string-array name="spinner_status">
-        <item>Set the status</item>
+        <item>Status</item>
         <item>Sold</item>
         <item>Available</item>
     </string-array>
@@ -41,7 +93,43 @@
     <string name="loft">Loft</string>
     <string name="duplex">Duplex</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!-- Authentication Feature -->
+    <string name="background_image_description">Background Image</string>
+    <string name="authentication_email_hint">Email</string>
+    <string name="authentication_password_hint">Password</string>
+    <string name="authentication_username_hint">Username</string>
+    <string name="authentication_wrong">Email or password or both are wrong.</string>
+    <string name="authentication_log_in_btn">Log in</string>
+    <string name="authentication_register_btn">Register</string>
+    <string name="authentication_sign_in_btn">Sign in</string>
+    <string name="authentication_email_taken">Email already taken. Please choose another one.</string>
+    <string name="sign_in_succeed">Sign in is a success !</string>
+
+    <!-- Others -->
+    <string name="arrow_drop_down">Select a date</string>
+    <string name="adding_photo">Add photo</string>
+
+    <string name="mortgage_amount">Amount</string>
+    <string name="mortgage_rate">Rate</string>
+    <string name="mortgage_duration">Duration</string>
+    <string name="mortgage_button">Mortgage Simulator</string>
+    <string name="monthly_paiement">Your monthly paiement is </string>
+
+    <string name="maps_user_position">Your position</string>
+    <string name="maps_warning_message_no_location">Don\'t have permission to access to location</string>
+
+    <string name="permission_act_warning_message_accept_permission">Please accept permissions or app can\'t work</string>
+
+    <string name="add_property_adding_message">The property has been registered in the database</string>
+    <string name="add_property_adding_photo_message">Do you want to take a picture or pick a picture from gallery ?</string>
+    <string name="add_property_adding_photo_gallery">From gallery</string>
+    <string name="add_property_adding_photo_camera">Take picture</string>
+    <string name="add_property_adding_photo_description">Enter a description to the photo</string>
+    <string name="add_property_adding_photo_description_positive">Validate</string>
+    <string name="add_property_remove_photo_message">Do you want to remove this photo ?</string>
+
+    <string name="search_property_no_property_found">No property found</string>
 
 </resources>

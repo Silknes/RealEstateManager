@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import com.openclassrooms.realestatemanager.PropertyViewModel;
+import com.openclassrooms.realestatemanager.View.PropertyViewModel;
 import com.openclassrooms.realestatemanager.Repositories.PhotoDataRepository;
 import com.openclassrooms.realestatemanager.Repositories.PropertyDataRepository;
 import com.openclassrooms.realestatemanager.Repositories.UserDataRepository;

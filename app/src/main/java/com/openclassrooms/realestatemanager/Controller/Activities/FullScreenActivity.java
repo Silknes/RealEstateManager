@@ -6,15 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.R;
 
+/*
+ * This activity is used only on smart phone to display an image in fullscreen
+ * When the user click on the image we display the description of it
+ */
 public class FullScreenActivity extends AppCompatActivity {
-    private ImageView img;
     private TextView descriptionView;
     private boolean isDescritpionVisible = false;
 
@@ -23,7 +24,7 @@ public class FullScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_screen);
 
-        img = findViewById(R.id.activity_fullscreen_img);
+        ImageView img = findViewById(R.id.activity_fullscreen_img);
         descriptionView = findViewById(R.id.activity_fullscreen_description);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -31,17 +32,14 @@ public class FullScreenActivity extends AppCompatActivity {
         Glide.with(this).load(Uri.parse(getIntent().getStringExtra("uri"))).into(img);
         descriptionView.setText(getIntent().getStringExtra("description"));
 
-        img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!isDescritpionVisible) {
-                    descriptionView.setVisibility(View.VISIBLE);
-                    isDescritpionVisible = true;
-                }
-                else {
-                    descriptionView.setVisibility(View.GONE);
-                    isDescritpionVisible = false;
-                }
+        img.setOnClickListener(v -> {
+            if(!isDescritpionVisible) {
+                descriptionView.setVisibility(View.VISIBLE);
+                isDescritpionVisible = true;
+            }
+            else {
+                descriptionView.setVisibility(View.GONE);
+                isDescritpionVisible = false;
             }
         });
     }
