@@ -23,10 +23,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="@dimen/acitivty_authentication_fragment_container_padding_start"
-        android:paddingEnd="@dimen/acitivty_authentication_fragment_container_padding_end"
-        android:paddingTop="@dimen/acitivty_authentication_fragment_container_padding_top"
-        android:paddingBottom="@dimen/acitivty_authentication_fragment_container_padding_bottom"
+        android:paddingStart="@dimen/activity_authentication_fragment_container_padding_start"
+        android:paddingEnd="@dimen/activity_authentication_fragment_container_padding_end"
+        android:paddingTop="@dimen/activity_authentication_fragment_container_padding_top"
+        android:paddingBottom="@dimen/activity_authentication_fragment_container_padding_bottom"
         android:id="@+id/activity_authentication_fragment_container"
         android:orientation="vertical">
 
@@ -42,7 +42,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/acitivty_authentication_margin_bottom_slogan"
+            android:layout_marginBottom="@dimen/activity_authentication_margin_bottom_slogan"
             android:text="@string/app_slogan"
             android:textColor="#FFF"
             android:textSize="16sp"

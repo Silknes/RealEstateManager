@@ -14,13 +14,13 @@ import com.openclassrooms.realestatemanager.R;
 
 public class PhotoViewHolder extends RecyclerView.ViewHolder{
     private ImageView photoView;
-    private TextView descriptinoView;
+    private TextView descriptionView;
 
     public PhotoViewHolder(@NonNull View itemView) {
         super(itemView);
 
         photoView = itemView.findViewById(R.id.fragment_detail_property_item_image);
-        descriptinoView = itemView.findViewById(R.id.fragment_detail_property_item_description);
+        descriptionView = itemView.findViewById(R.id.fragment_detail_property_item_description);
     }
 
 
@@ -30,6 +30,6 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder{
                         .transform(new CenterCrop()))
                 .into(photoView);
 
-        descriptinoView.setText(photo.getDescription());
+        descriptionView.setText(photo.getDescription());
     }
 }

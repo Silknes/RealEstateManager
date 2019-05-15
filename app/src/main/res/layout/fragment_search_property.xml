@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Point of interest"
+                android:text="@string/property_poi"
                 android:layout_marginStart="8dp"/>
 
             <LinearLayout
@@ -55,13 +55,13 @@
                     <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="School"
+                        android:text="@string/property_poi_school"
                         android:id="@+id/fragment_search_property_checkbox_school"/>
 
                     <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Shop"
+                        android:text="@string/property_poi_shop"
                         android:id="@+id/fragment_search_property_checkbox_shop"/>
 
                 </LinearLayout>
@@ -75,13 +75,13 @@
                     <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Parc"
+                        android:text="@string/property_poi_parc"
                         android:id="@+id/fragment_search_property_checkbox_parc"/>
 
                     <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Public transport"
+                        android:text="@string/property_poi_transport"
                         android:id="@+id/fragment_search_property_checkbox_transport"/>
 
                 </LinearLayout>

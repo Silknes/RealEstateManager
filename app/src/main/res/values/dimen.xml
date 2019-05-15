@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="acitivty_authentication_fragment_container_padding_start">16dp</dimen>
-    <dimen name="acitivty_authentication_fragment_container_padding_end">16dp</dimen>
-    <dimen name="acitivty_authentication_fragment_container_padding_top">32dp</dimen>
-    <dimen name="acitivty_authentication_fragment_container_padding_bottom">32dp</dimen>
-    <dimen name="acitivty_authentication_margin_bottom_slogan">48dp</dimen>
+    <dimen name="activity_authentication_fragment_container_padding_start">16dp</dimen>
+    <dimen name="activity_authentication_fragment_container_padding_end">16dp</dimen>
+    <dimen name="activity_authentication_fragment_container_padding_top">32dp</dimen>
+    <dimen name="activity_authentication_fragment_container_padding_bottom">32dp</dimen>
+    <dimen name="activity_authentication_margin_bottom_slogan">48dp</dimen>
 
     <dimen name="fragment_authentication_margin_bottom_email">16dp</dimen>
 

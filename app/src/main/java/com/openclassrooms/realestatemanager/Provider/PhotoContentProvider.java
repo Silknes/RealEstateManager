@@ -12,7 +12,7 @@ import com.openclassrooms.realestatemanager.Database.RealEstateManagerDatabase;
 import com.openclassrooms.realestatemanager.Model.Photo;
 
 public class PhotoContentProvider extends ContentProvider {
-    public static final String AUTHORITY = "com.openclassrooms.realestatemanager.provider";
+    public static final String AUTHORITY = "com.openclassrooms.realestatemanager.providerphoto";
     public static final String TABLE_NAME = Photo.class.getSimpleName();
     public static final Uri URI_ITEM = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
 
@@ -57,9 +57,7 @@ public class PhotoContentProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         if (getContext() != null){
-            final int count = RealEstateManagerDatabase.getInstance(getContext()).photoDao().deletePhoto(ContentUris.parseId(uri));
-            getContext().getContentResolver().notifyChange(uri, null);
-            return count;
+            return RealEstateManagerDatabase.getInstance(getContext()).photoDao().deletePhoto(ContentUris.parseId(uri));
         }
         throw new IllegalArgumentException("Failed to delete row into " + uri);
     }

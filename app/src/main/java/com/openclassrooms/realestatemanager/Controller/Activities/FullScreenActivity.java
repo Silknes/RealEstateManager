@@ -17,7 +17,7 @@ import com.openclassrooms.realestatemanager.R;
  */
 public class FullScreenActivity extends AppCompatActivity {
     private TextView descriptionView;
-    private boolean isDescritpionVisible = false;
+    private boolean isDescriptionVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +33,13 @@ public class FullScreenActivity extends AppCompatActivity {
         descriptionView.setText(getIntent().getStringExtra("description"));
 
         img.setOnClickListener(v -> {
-            if(!isDescritpionVisible) {
+            if(!isDescriptionVisible) {
                 descriptionView.setVisibility(View.VISIBLE);
-                isDescritpionVisible = true;
+                isDescriptionVisible = true;
             }
             else {
                 descriptionView.setVisibility(View.GONE);
-                isDescritpionVisible = false;
+                isDescriptionVisible = false;
             }
         });
     }

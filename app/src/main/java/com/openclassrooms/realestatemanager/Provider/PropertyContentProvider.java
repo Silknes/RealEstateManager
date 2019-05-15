@@ -54,8 +54,7 @@ public class PropertyContentProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         if(getContext() != null){
-            final int count = RealEstateManagerDatabase.getInstance(getContext()).propertyDao().deleteProperty(ContentUris.parseId(uri));
-            return count;
+            return RealEstateManagerDatabase.getInstance(getContext()).propertyDao().deleteProperty(ContentUris.parseId(uri));
         }
         throw new IllegalArgumentException("Failed to delete row into " + uri);
     }

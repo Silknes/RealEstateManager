@@ -59,11 +59,6 @@ public class Utils {
         return Integer.parseInt("" + year + month + day);
     }
 
-    public static int formatStringDateToInt(String date){
-        String newDate = "" + date.replace("/", "");
-        return Integer.parseInt(newDate);
-    }
-
     public static String formatIntDateToString(int date){
         String newDate = "" + date;
         String day = "", month = "", year = "";
