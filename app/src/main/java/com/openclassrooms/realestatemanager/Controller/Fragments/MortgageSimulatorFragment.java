@@ -76,7 +76,7 @@ public class MortgageSimulatorFragment extends Fragment {
 
     private void calculateMonthly(){
         if(amountValue != 0 && durationValue != 0 && rateValue != 0){
-            monthlyView.setText(Utils.calculateMonthly(amountValue, rateValue, durationValue) + " $");
+            monthlyView.setText(Utils.calculateMonthly(amountValue, rateValue, durationValue));
             txtMonthly.setVisibility(View.VISIBLE);
         } else txtMonthly.setVisibility(View.GONE);
     }

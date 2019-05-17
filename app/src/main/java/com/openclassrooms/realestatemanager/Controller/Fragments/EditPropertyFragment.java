@@ -59,15 +59,13 @@ import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
-public class EditPropertyFragment extends Fragment implements AdapterView.OnItemSelectedListener, MapsApiCalls.CallbacksGeocoding {
+public class EditPropertyFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     private Spinner spinnerType, spinnerStatus;
     private TextInputEditText priceView, descriptionView, addressView, areaView, nbRoomView, nbHouseView, cityView, postalCodeView;
     private EditText photoDescriptionEdit;
     private TextView saleDateView, entryDateView, textAgent, saleDateTitle;
     private RelativeLayout relativeSaleDate, relativeEntryDate;
     private CheckBox checkBoxSchool, checkBoxShop, checkBoxParc, checkBoxTransport;
-
-    private ImageView staticMap;
 
     private RecyclerView recyclerView;
     private PhotoAdapter adapter;
@@ -85,12 +83,6 @@ public class EditPropertyFragment extends Fragment implements AdapterView.OnItem
     private List<Photo> photoList;
     private List<Photo> photoListToAddInDb = new ArrayList<>();
     private List<Photo> photoListToRemoveInDb = new ArrayList<>();
-
-    private OnButtonClickedListener callback;
-
-    public interface OnButtonClickedListener{
-        void onMortgageSimulatorButtonClicked(double price);
-    }
 
     public EditPropertyFragment() {}
 
@@ -119,18 +111,13 @@ public class EditPropertyFragment extends Fragment implements AdapterView.OnItem
         LinearLayout linearAddPhoto = view.findViewById(R.id.fragment_edit_property_linear_add_photo);
         relativeSaleDate = view.findViewById(R.id.fragment_edit_property_container_date_sale);
         relativeEntryDate = view.findViewById(R.id.fragment_edit_property_container_entry_date);
-        LinearLayout linearStaticMap = view.findViewById(R.id.fragment_edit_property_container_static_map);
 
         checkBoxSchool = view.findViewById(R.id.fragment_edit_property_checkbox_school);
         checkBoxShop = view.findViewById(R.id.fragment_edit_property_checkbox_shop);
         checkBoxParc = view.findViewById(R.id.fragment_edit_property_checkbox_parc);
         checkBoxTransport = view.findViewById(R.id.fragment_edit_property_checkbox_public_transport);
 
-        Button mortgageBtn = view.findViewById(R.id.fragment_edit_property_btn_mortgage);
-
         recyclerView = view.findViewById(R.id.fragment_edit_property_recycler_view);
-
-        staticMap = view.findViewById(R.id.fragment_edit_property_static_map);
 
         property = (Property) (getArguments() != null ? getArguments().getSerializable("property") : null);
 
@@ -156,29 +143,7 @@ public class EditPropertyFragment extends Fragment implements AdapterView.OnItem
 
         this.updateViewWithPropertyData();
 
-        if(Utils.isInternetAvailable(Objects.requireNonNull(getContext()))) {
-            this.fetchLocationFromAddress();
-            linearStaticMap.setVisibility(View.VISIBLE);
-        }
-
-        mortgageBtn.setOnClickListener(v -> callback.onMortgageSimulatorButtonClicked(Double.parseDouble(priceView.getText().toString())));
-
         return view;
-    }
-
-    /**********************************************
-    **** Configure callback to parent activity ****
-    **********************************************/
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        this.createCallbackToParentActivity();
-    }
-
-    private void createCallbackToParentActivity(){
-        callback = (OnButtonClickedListener) getActivity();
     }
 
     /****************************************
@@ -532,38 +497,7 @@ public class EditPropertyFragment extends Fragment implements AdapterView.OnItem
         return photoList.size() + 1;
     }
 
-    /*************************
-    **** Add a static map ****
-    *************************/
-
-    // Fetch the location for this property and add a static map
-    private void fetchLocationFromAddress(){
-        MapsApiCalls.fetchLocationFromAddress(this, getString(R.string.api_key), getPropertyAddress());
+    public Property getNewProperty(){
+        return property;
     }
-
-    // Return a format address used to fetch the location of the property
-    private String getPropertyAddress(){
-        return property.getHouseNumber() + property.getAddress() + "," + property.getCity() + "," + property.getPostalCode();
-    }
-
-    // When getting the result, add a static map with a marker at the correct location
-    @Override
-    public void onResponseGeocoding(@Nullable ApiResult apiResult) {
-        if(apiResult != null){
-            String location = apiResult.getResults().get(0).getGeometry().getLocation().getLat() + "," +
-                    apiResult.getResults().get(0).getGeometry().getLocation().getLng() + "&";
-
-            String center = "center=" + location;
-            String size = "size=200x200&";
-            String zoom = "zoom=12&";
-            String marker = "markers=color:blue%7C" + location;
-            String key = "key=" + getString(R.string.api_key);
-
-            Uri uri = Uri.parse("https://maps.googleapis.com/maps/api/staticmap?" + center + size + zoom + marker + key);
-            Glide.with(this).load(uri).into(staticMap);
-        }
-    }
-
-    @Override
-    public void onFailureGeocoding() {}
 }

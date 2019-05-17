@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.Controller.Fragments.AddPropertyFragment;
+import com.openclassrooms.realestatemanager.Controller.Fragments.DetailPropertyFragment;
 import com.openclassrooms.realestatemanager.Controller.Fragments.EditPropertyFragment;
 import com.openclassrooms.realestatemanager.Controller.Fragments.MortgageSimulatorFragment;
 import com.openclassrooms.realestatemanager.Controller.Fragments.PropertyFragment;
@@ -50,7 +51,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  * Resolve it by change the type of quantity to String and add : "" + before Utils.convert...
  */
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PropertyFragment.onItemClickedListener, AddPropertyFragment.OnButtonClickedListener, SearchPropertyFragment.OnItemClickedListener, EditPropertyFragment.OnButtonClickedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PropertyFragment.onItemClickedListener, AddPropertyFragment.OnButtonClickedListener, SearchPropertyFragment.OnItemClickedListener, DetailPropertyFragment.OnButtonClickedListener{
     private String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int RC_MAPS_ACTIVITY = 1;
 
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private PropertyFragment propertyFragment;
     private AddPropertyFragment addPropertyFragment;
     private EditPropertyFragment editPropertyFragment;
+    private DetailPropertyFragment detailPropertyFragment;
 
     private NavigationView navigationView;
     private TextView txtUserMail, txtUsername;
@@ -68,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean[] pois = new boolean[]{false, false, false, false};
 
     private PropertyViewModel propertyViewModel;
+
+    private Property property;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +89,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent = new Intent(this, AuthenticationActivity.class);
                 startActivity(intent);
             } else {
-
                 this.configureAndShowDefaultFragment();
+
                 this.configureToolbar();
                 this.configureDrawerLayout();
                 this.configureNavigationView();
@@ -132,10 +136,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.menu_toolbar_item_add_property :
-                if(!fragmentManager.getFragments().contains(addPropertyFragment)){
-                    addPropertyFragment = new AddPropertyFragment();
-                    this.configureAndShowFragment(addPropertyFragment);
-                }
+                addPropertyFragment = new AddPropertyFragment();
+                this.configureAndShowFragment(addPropertyFragment);
                 return true;
             case R.id.menu_toolbar_item_edit_property :
                 this.configureClickOnItemEdit();
@@ -154,9 +156,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(fragmentManager.getFragments().contains(editPropertyFragment)){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.save_changes))
-                    .setPositiveButton(getString(R.string.alert_dialog_default_positive_message), (dialogInterface, i) -> editPropertyFragment.updateDB())
-                    .setNegativeButton(getString(R.string.alert_dialog_default_negative_message), (dialogInterface, i) -> {})
+                    .setPositiveButton(getString(R.string.alert_dialog_default_positive_message), (dialogInterface, i) -> {
+                        editPropertyFragment.updateDB();
+                        detailPropertyFragment = new DetailPropertyFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("property", editPropertyFragment.getNewProperty());
+                        detailPropertyFragment.setArguments(bundle);
+                        this.configureAndShowFragment(detailPropertyFragment);
+                    })
+                    .setNegativeButton(getString(R.string.alert_dialog_default_negative_message), (dialogInterface, i) -> {
+                        this.configureAndShowFragment(propertyFragment);
+                    })
                     .show();
+        } else if(fragmentManager.getFragments().contains(detailPropertyFragment)){
+            editPropertyFragment = new EditPropertyFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("property", property);
+            editPropertyFragment.setArguments(bundle);
+            this.configureAndShowFragment(editPropertyFragment);
         } else Toast.makeText(this, getString(R.string.warning_message_edit_button), Toast.LENGTH_SHORT).show();
     }
 
@@ -231,12 +248,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Method that init fragment
     private void configureAndShowDefaultFragment(){
-        propertyFragment = (PropertyFragment) fragmentManager
-                .findFragmentById(R.id.activity_main_fragment_container);
-        if(propertyFragment == null) {
+        if(fragmentManager.getFragments().isEmpty()){
+            propertyFragment = (PropertyFragment) fragmentManager
+                    .findFragmentById(R.id.activity_main_fragment_container);
+            if(propertyFragment == null) {
+                propertyFragment = new PropertyFragment();
+                fragmentManager.beginTransaction()
+                        .add(R.id.activity_main_fragment_container, propertyFragment)
+                        .commit();
+            }
+        } else {
             propertyFragment = new PropertyFragment();
             fragmentManager.beginTransaction()
-                    .add(R.id.activity_main_fragment_container, propertyFragment)
+                    .replace(R.id.activity_main_fragment_container, propertyFragment)
+                    .addToBackStack(null)
                     .commit();
         }
     }
@@ -245,22 +270,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void configureAndShowFragment(Fragment fragment){
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        if(!isLandscape()) transaction.replace(R.id.activity_main_fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
-        else transaction.replace(R.id.activity_main_second_fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
+        if(isLandscape()){
+            transaction.replace(R.id.activity_main_fragment_container, propertyFragment)
+                    .add(R.id.activity_main_fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            transaction.replace(R.id.activity_main_fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     // Method that manage the click on recyclerView items from PropertyFragment (used when phone is in landscape)
     @Override
     public void onItemClicked(Property property) {
-        editPropertyFragment = new EditPropertyFragment();
+        this.property = property;
+        detailPropertyFragment = new DetailPropertyFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("property", property);
-        editPropertyFragment.setArguments(bundle);
-        this.configureAndShowFragment(editPropertyFragment);
+        detailPropertyFragment.setArguments(bundle);
+        this.configureAndShowFragment(detailPropertyFragment);
     }
 
     @Override

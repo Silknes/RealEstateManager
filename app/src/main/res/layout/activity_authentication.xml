@@ -46,7 +46,8 @@
             android:text="@string/app_slogan"
             android:textColor="#FFF"
             android:textSize="16sp"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:textAlignment="center"/>
 
     </LinearLayout>
 

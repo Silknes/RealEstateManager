@@ -141,15 +141,13 @@ public class Utils {
         return str.substring(0,1).toUpperCase() + str.substring(1);
     }
 
-    public static double calculateMonthly(double amount, double rate, int duration){
+    public static String calculateMonthly(double amount, double rate, int duration){
         double realRate = rate/100;
         double monthly = ((amount*realRate)/12)/(1-Math.pow(1+(realRate/12), duration*12*-1));
 
         DecimalFormat decimalFormat = new DecimalFormat();
         decimalFormat.setMaximumFractionDigits(2);
 
-        monthly = Double.parseDouble(decimalFormat.format(monthly));
-
-        return monthly;
+        return decimalFormat.format(monthly) + " $";
     }
 }

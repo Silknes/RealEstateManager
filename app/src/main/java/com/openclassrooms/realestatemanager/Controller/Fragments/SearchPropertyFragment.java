@@ -51,7 +51,7 @@ public class SearchPropertyFragment extends Fragment{
     private int entryDateMinValue, saleDateMinValue;
     private int entryDateMaxValue = Utils.formatCurrentDateToInt();
     private int saleDateMaxValue = Utils.formatCurrentDateToInt();
-    private String cityValue = "% %";
+    private String cityValue = "%%";
     private boolean schoolValue, shopValue, parcValue, transportValue;
     private List<Property> propertyList = new ArrayList<>();
     private List<Photo> photoList = new ArrayList<>();
